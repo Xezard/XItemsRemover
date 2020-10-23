@@ -1,0 +1,27 @@
+name: XItemsRemover
+main: ru.xezard.items.remover.ItemsRemoverPlugin
+description: Removes dropped items with a timer displayed on them!
+author: Xezard
+website: http://xezard.ru
+version: 1.0.0
+api-version: 1.16
+depend: [XConfiguration]
+
+commands:
+  itemsremover:
+    aliases: [ir]
+    description: prints help message
+    permission: items.remover.commands.help
+
+permissions:
+  items.remover.commands.*:
+    description: Gives access to all XItemsRemover commands
+    children:
+      items.remover.commands.help: true
+      items.remover.commands.reload: true
+  items.remover.commands.help:
+    description: Allows to use /help command
+    default: op
+  items.remover.commands.reload:
+    description: Allows to use /reload command
+    default: op
