@@ -1,0 +1,6 @@
+Items:
+  Display-name-format: "§c⚠ {time}"
+  Remove:
+    # Timer for removing an item in ticks. 1 second = 20 ticks
+    Default-timer: 600
+    Async: true
