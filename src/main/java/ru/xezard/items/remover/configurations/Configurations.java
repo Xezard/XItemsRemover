@@ -36,7 +36,7 @@ public class Configurations
     private Plugin plugin;
 
     public Configurations(Plugin plugin, String... configurationsNames)
-	{
+    {
         this.plugin = plugin;
 
         this.configurationsNames = Lists.newArrayList(configurationsNames);
@@ -45,7 +45,7 @@ public class Configurations
     }
 
     private File generateDefaultFile(String name)
-	{
+    {
         File file = new File(this.plugin.getDataFolder(), name);
 
         if (!file.exists())
@@ -57,7 +57,7 @@ public class Configurations
     }
 
     public void loadConfigurations()
-	{
+    {
         for (String configurationName : this.configurationsNames)
         {
             if (this.configurations.containsKey(configurationName))
@@ -74,33 +74,33 @@ public class Configurations
     }
 
     public void reloadConfigurations()
-	{
+    {
         this.configurations.clear();
 
         this.loadConfigurations();
     }
 
     private Optional<Map.Entry<FileConfiguration, File>> getEntry(String configurationName)
-	{
+    {
         return Optional.ofNullable(this.configurations.get(configurationName));
     }
 
     public FileConfiguration get(String configurationName)
-	{
+    {
         return this.getEntry(configurationName)
                    .map(Map.Entry::getKey)
                    .orElse(null);
     }
 
     private File getFile(String configurationName)
-	{
+    {
         return this.getEntry(configurationName)
                    .map(Map.Entry::getValue)
                    .orElse(null);
     }
 
     public void save(String configurationName)
-	{
+    {
         this.getEntry(configurationName).ifPresent((entry) ->
         {
             try {
