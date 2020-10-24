@@ -29,85 +29,85 @@ import org.bukkit.plugin.Plugin;
 
 public class Configurations
 {
-	private Map<String, Map.Entry<FileConfiguration, File>> configurations = new HashMap<> ();
+    private Map<String, Map.Entry<FileConfiguration, File>> configurations = new HashMap<> ();
 
-	private List<String> configurationsNames;
+    private List<String> configurationsNames;
 
-	private Plugin plugin;
+    private Plugin plugin;
 
-	public Configurations(Plugin plugin, String... configurationsNames)
+    public Configurations(Plugin plugin, String... configurationsNames)
 	{
-		this.plugin = plugin;
+        this.plugin = plugin;
 
-		this.configurationsNames = Lists.newArrayList(configurationsNames);
+        this.configurationsNames = Lists.newArrayList(configurationsNames);
 
-		this.loadConfigurations();
-	}
+        this.loadConfigurations();
+    }
 
-	private File generateDefaultFile(String name)
+    private File generateDefaultFile(String name)
 	{
-		File file = new File(this.plugin.getDataFolder(), name);
+        File file = new File(this.plugin.getDataFolder(), name);
 
-		if (!file.exists())
-		{
-			this.plugin.saveResource(name, false);
-		}
+        if (!file.exists())
+        {
+            this.plugin.saveResource(name, false);
+        }
 
-		return file;
-	}
+        return file;
+    }
 
-	public void loadConfigurations()
+    public void loadConfigurations()
 	{
-		for (String configurationName : this.configurationsNames)
-		{
-			if (this.configurations.containsKey(configurationName))
-			{
-				continue;
-			}
+        for (String configurationName : this.configurationsNames)
+        {
+            if (this.configurations.containsKey(configurationName))
+            {
+                continue;
+            }
 
-			File configurationFile = this.generateDefaultFile(configurationName);
+            File configurationFile = this.generateDefaultFile(configurationName);
 
-			FileConfiguration configuration = YamlConfiguration.loadConfiguration(configurationFile);
+            FileConfiguration configuration = YamlConfiguration.loadConfiguration(configurationFile);
 
-			this.configurations.put(configurationName, new AbstractMap.SimpleEntry<> (configuration, configurationFile));
-		}
-	}
+            this.configurations.put(configurationName, new AbstractMap.SimpleEntry<> (configuration, configurationFile));
+        }
+    }
 
-	public void reloadConfigurations()
+    public void reloadConfigurations()
 	{
-		this.configurations.clear();
+        this.configurations.clear();
 
-		this.loadConfigurations();
-	}
+        this.loadConfigurations();
+    }
 
-	private Optional<Map.Entry<FileConfiguration, File>> getEntry(String configurationName)
+    private Optional<Map.Entry<FileConfiguration, File>> getEntry(String configurationName)
 	{
-		return Optional.ofNullable(this.configurations.get(configurationName));
-	}
+        return Optional.ofNullable(this.configurations.get(configurationName));
+    }
 
-	public FileConfiguration get(String configurationName)
+    public FileConfiguration get(String configurationName)
 	{
-		return this.getEntry(configurationName)
-				   .map(Map.Entry::getKey)
-				   .orElse(null);
-	}
+        return this.getEntry(configurationName)
+                   .map(Map.Entry::getKey)
+                   .orElse(null);
+    }
 
-	private File getFile(String configurationName)
+    private File getFile(String configurationName)
 	{
-		return this.getEntry(configurationName)
-				   .map(Map.Entry::getValue)
-				   .orElse(null);
-	}
+        return this.getEntry(configurationName)
+                   .map(Map.Entry::getValue)
+                   .orElse(null);
+    }
 
-	public void save(String configurationName)
+    public void save(String configurationName)
 	{
-		this.getEntry(configurationName).ifPresent((entry) ->
-		{
-			try {
-				entry.getKey().save(entry.getValue());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
-	}
+        this.getEntry(configurationName).ifPresent((entry) ->
+        {
+            try {
+                entry.getKey().save(entry.getValue());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 }
