@@ -25,7 +25,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import ru.xezard.items.remover.data.ItemsManager;
 
 @AllArgsConstructor
-public class PlayerPickupItemListener
+public class EntityPickupItemListener
 implements Listener
 {
     private ItemsManager itemsManager;

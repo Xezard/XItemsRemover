@@ -27,7 +27,7 @@ import ru.xezard.items.remover.data.ItemsManager;
 import ru.xezard.items.remover.listeners.ItemDespawnListener;
 import ru.xezard.items.remover.listeners.ItemMergeListener;
 import ru.xezard.items.remover.listeners.ItemSpawnListener;
-import ru.xezard.items.remover.listeners.PlayerPickupItemListener;
+import ru.xezard.items.remover.listeners.EntityPickupItemListener;
 
 public class ItemsRemoverPlugin
 extends JavaPlugin
@@ -59,10 +59,10 @@ extends JavaPlugin
     {
         PluginManager pluginManager = Bukkit.getPluginManager();
 
+        pluginManager.registerEvents(new EntityPickupItemListener(this.itemsManager), this);
         pluginManager.registerEvents(new ItemDespawnListener(this.itemsManager), this);
         pluginManager.registerEvents(new ItemMergeListener(this.itemsManager), this);
         pluginManager.registerEvents(new ItemSpawnListener(this.getConfig(), this.itemsManager), this);
-        pluginManager.registerEvents(new PlayerPickupItemListener(this.itemsManager), this);
     }
 
     private void registerCommands()
