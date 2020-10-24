@@ -6,7 +6,7 @@
 
     <groupId>ru.xezard</groupId>
     <artifactId>XItemsRemover</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <build>
         <defaultGoal>clean package install</defaultGoal>
 
@@ -29,11 +29,6 @@
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
-
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -41,13 +36,6 @@
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-api</artifactId>
             <version>1.16.3-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.Xezard.XConfiguration</groupId>
-            <artifactId>XConfigurationAPI</artifactId>
-            <version>2.0.1</version>
             <scope>provided</scope>
         </dependency>
 

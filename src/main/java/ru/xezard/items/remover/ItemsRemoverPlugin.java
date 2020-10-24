@@ -22,8 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.xezard.items.remover.commands.ItemsRemoverCommand;
-import ru.xezard.items.remover.configurations.ItemsRemoverConfiguration;
-import ru.xezard.items.remover.configurations.MessagesConfiguration;
+import ru.xezard.items.remover.configurations.Configurations;
 import ru.xezard.items.remover.data.ItemsManager;
 import ru.xezard.items.remover.listeners.ItemDespawnListener;
 import ru.xezard.items.remover.listeners.ItemMergeListener;
@@ -33,17 +32,16 @@ import ru.xezard.items.remover.listeners.PlayerPickupItemListener;
 public class ItemsRemoverPlugin
 extends JavaPlugin
 {
-    private ItemsRemoverConfiguration configuration = new ItemsRemoverConfiguration(this.getDataFolder());
-    private MessagesConfiguration messagesConfiguration = new MessagesConfiguration(this.getDataFolder());
+    private Configurations configurations = new Configurations(this, "config.yml", "messages.yml");
 
     private ItemsManager itemsManager;
 
     @Override
     public void onEnable()
     {
-        this.loadConfigurations();
+        this.configurations.loadConfigurations();
 
-        this.itemsManager = new ItemsManager(this.configuration, this);
+        this.itemsManager = new ItemsManager(this.configurations.get("config.yml"), this);
 
         this.registerListeners();
         this.registerCommands();
@@ -54,7 +52,6 @@ extends JavaPlugin
     @Override
     public void onDisable()
     {
-        this.messagesConfiguration = null;
         this.itemsManager = null;
     }
 
@@ -64,7 +61,7 @@ extends JavaPlugin
 
         pluginManager.registerEvents(new ItemDespawnListener(this.itemsManager), this);
         pluginManager.registerEvents(new ItemMergeListener(this.itemsManager), this);
-        pluginManager.registerEvents(new ItemSpawnListener(this.configuration, this.itemsManager), this);
+        pluginManager.registerEvents(new ItemSpawnListener(this.getConfig(), this.itemsManager), this);
         pluginManager.registerEvents(new PlayerPickupItemListener(this.itemsManager), this);
     }
 
@@ -72,15 +69,9 @@ extends JavaPlugin
     {
         this.getCommand("itemsremover").setExecutor(new ItemsRemoverCommand
         (
-                this.messagesConfiguration,
+                this.configurations.get("messages.yml"),
                 this
         ));
-    }
-
-    private void loadConfigurations()
-    {
-        this.configuration.load();
-        this.messagesConfiguration.load();
     }
 
     public void reload()
@@ -88,7 +79,7 @@ extends JavaPlugin
         this.itemsManager.clear();
         this.itemsManager.stopRemoverTask();
 
-        this.loadConfigurations();
+        this.configurations.loadConfigurations();
 
         this.itemsManager.startRemoverTask();
     }

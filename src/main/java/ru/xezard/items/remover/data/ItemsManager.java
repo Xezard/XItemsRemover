@@ -19,10 +19,10 @@
 package ru.xezard.items.remover.data;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Item;
 import org.bukkit.scheduler.BukkitTask;
 import ru.xezard.items.remover.ItemsRemoverPlugin;
-import ru.xezard.items.remover.configurations.ItemsRemoverConfiguration;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,11 +34,11 @@ public class ItemsManager
 
     private BukkitTask removerTask;
 
-    private ItemsRemoverConfiguration configuration;
+    private FileConfiguration configuration;
 
     private ItemsRemoverPlugin plugin;
 
-    public ItemsManager(ItemsRemoverConfiguration configuration, ItemsRemoverPlugin plugin)
+    public ItemsManager(FileConfiguration configuration, ItemsRemoverPlugin plugin)
     {
         this.configuration = configuration;
 
@@ -57,7 +57,7 @@ public class ItemsManager
             {
                 entry.setValue(time - 1);
 
-                item.setCustomName(this.configuration.getItemDisplayNameFormat()
+                item.setCustomName(this.configuration.getString("Items.Display-name-format")
                         .replace("{time}", Long.toString((time + 20) / 20)));
                 continue;
             }
@@ -75,10 +75,11 @@ public class ItemsManager
             world.getEntities()
                  .stream()
                  .filter(Item.class::isInstance)
-                 .forEach((entity) -> this.addItem((Item) entity, this.configuration.getItemRemoveDefaultTimer()));
+                 .peek((item) -> item.setCustomNameVisible(true))
+                 .forEach((entity) -> this.addItem((Item) entity, this.configuration.getLong("Items.Remove.Default-timer")));
         });
 
-        if (this.configuration.isItemRemoveAsync())
+        if (this.configuration.getBoolean("Items.Remove.Async"))
         {
             this.removerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, this::clearItems, 0, 1);
         } else {
@@ -104,7 +105,7 @@ public class ItemsManager
     public void mergeItems(Item merged, Item target)
     {
         this.removeItem(merged);
-        this.setItemTimer(target, this.configuration.getItemRemoveDefaultTimer());
+        this.setItemTimer(target, this.configuration.getLong("Items.Remove.Default-timer"));
     }
 
     public void clear()
