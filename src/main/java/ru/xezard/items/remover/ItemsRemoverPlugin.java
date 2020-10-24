@@ -79,7 +79,7 @@ extends JavaPlugin
         this.itemsManager.clear();
         this.itemsManager.stopRemoverTask();
 
-        this.configurations.loadConfigurations();
+        this.configurations.reloadConfigurations();
 
         this.itemsManager.startRemoverTask();
     }
