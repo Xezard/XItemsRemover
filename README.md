@@ -11,6 +11,8 @@ XItemsRemover is a simple plugin for Spigot that removes dropped items with a ti
 * Supported Java version: 8+
 * Tested on spigot 1.16.3
 
+> IMPORTANT! This plugin uses [XConfiguration](https://github.com/Xezard/XConfiguration) to work with configurations.
+
 ## Image 
 ![](https://sun9-74.userapi.com/KZPdZwCg5Ho79p7ft7NkcwICFB4ESZMbY_uOrQ/Hp9-IpeW-UQ.jpg)
 
