@@ -22,8 +22,8 @@ import lombok.AllArgsConstructor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import ru.xezard.items.remover.ItemsRemoverPlugin;
+import ru.xezard.items.remover.configurations.Configurations;
 import ru.xezard.items.remover.utils.Chat;
 
 import java.util.Arrays;
@@ -44,7 +44,7 @@ implements CommandExecutor
 
     private static final String CONSOLE_PLUGIN_RELOADED_MESSAGE = "[XItemsRemover] Plugin successfully reloaded!";
 
-    private FileConfiguration messagesConfiguration;
+    private Configurations configurations;
 
     private ItemsRemoverPlugin plugin;
 
@@ -78,23 +78,23 @@ implements CommandExecutor
     {
         if (!sender.hasPermission("items.remover.commands.reload"))
         {
-            sender.sendMessage(this.messagesConfiguration.getString("Chat-messages.You-dont-have-enough-permissions"));
+            sender.sendMessage(this.configurations.get("messages.yml").getString("Chat-messages.You-dont-have-enough-permissions"));
             return;
         }
 
         this.plugin.reload();
 
-        Chat.message(sender, this.messagesConfiguration.getString("Chat-messages.Plugin-reloaded"), CONSOLE_PLUGIN_RELOADED_MESSAGE);
+        Chat.message(sender, this.configurations.get("messages.yml").getString("Chat-messages.Plugin-reloaded"), CONSOLE_PLUGIN_RELOADED_MESSAGE);
     }
 
     private void sendHelp(CommandSender sender)
     {
         if (!sender.hasPermission("items.remover.commands.help"))
         {
-            sender.sendMessage(this.messagesConfiguration.getString("Chat-messages.You-dont-have-enough-permissions"));
+            sender.sendMessage(this.configurations.get("messages.yml").getString("Chat-messages.You-dont-have-enough-permissions"));
             return;
         }
 
-        Chat.message(sender, this.messagesConfiguration.getStringList("Chat-messages.Help"), CONSOLE_HELP_MESSAGE);
+        Chat.message(sender, this.configurations.get("messages.yml").getStringList("Chat-messages.Help"), CONSOLE_HELP_MESSAGE);
     }
 }

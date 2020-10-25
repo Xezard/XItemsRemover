@@ -23,6 +23,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Item;
 import org.bukkit.scheduler.BukkitTask;
 import ru.xezard.items.remover.ItemsRemoverPlugin;
+import ru.xezard.items.remover.configurations.Configurations;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,13 +35,13 @@ public class ItemsManager
 
     private BukkitTask removerTask;
 
-    private FileConfiguration configuration;
+    private Configurations configurations;
 
     private ItemsRemoverPlugin plugin;
 
-    public ItemsManager(FileConfiguration configuration, ItemsRemoverPlugin plugin)
+    public ItemsManager(Configurations configurations, ItemsRemoverPlugin plugin)
     {
-        this.configuration = configuration;
+        this.configurations = configurations;
 
         this.plugin = plugin;
     }
@@ -57,7 +58,7 @@ public class ItemsManager
             {
                 entry.setValue(time - 1);
 
-                item.setCustomName(this.configuration.getString("Items.Display-name-format")
+                item.setCustomName(this.configurations.get("config.yml").getString("Items.Display-name-format")
                         .replace("{time}", Long.toString((time + 20) / 20)));
                 continue;
             }
@@ -76,10 +77,11 @@ public class ItemsManager
                  .stream()
                  .filter(Item.class::isInstance)
                  .peek((item) -> item.setCustomNameVisible(true))
-                 .forEach((entity) -> this.addItem((Item) entity, this.configuration.getLong("Items.Remove.Default-timer")));
+                 .forEach((entity) -> this.addItem((Item) entity, this.configurations.get("config.yml")
+                         .getLong("Items.Remove.Default-timer")));
         });
 
-        if (this.configuration.getBoolean("Items.Remove.Async"))
+        if (this.configurations.get("config.yml").getBoolean("Items.Remove.Async"))
         {
             this.removerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, this::clearItems, 0, 1);
         } else {
@@ -105,7 +107,7 @@ public class ItemsManager
     public void mergeItems(Item merged, Item target)
     {
         this.removeItem(merged);
-        this.setItemTimer(target, this.configuration.getLong("Items.Remove.Default-timer"));
+        this.setItemTimer(target, this.configurations.get("config.yml").getLong("Items.Remove.Default-timer"));
     }
 
     public void clear()

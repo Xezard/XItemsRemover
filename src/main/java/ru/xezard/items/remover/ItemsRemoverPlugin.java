@@ -41,7 +41,7 @@ extends JavaPlugin
     {
         this.configurations.loadConfigurations();
 
-        this.itemsManager = new ItemsManager(this.configurations.get("config.yml"), this);
+        this.itemsManager = new ItemsManager(this.configurations, this);
 
         this.registerListeners();
         this.registerCommands();
@@ -52,6 +52,7 @@ extends JavaPlugin
     @Override
     public void onDisable()
     {
+        this.configurations = null;
         this.itemsManager = null;
     }
 
@@ -62,14 +63,14 @@ extends JavaPlugin
         pluginManager.registerEvents(new EntityPickupItemListener(this.itemsManager), this);
         pluginManager.registerEvents(new ItemDespawnListener(this.itemsManager), this);
         pluginManager.registerEvents(new ItemMergeListener(this.itemsManager), this);
-        pluginManager.registerEvents(new ItemSpawnListener(this.getConfig(), this.itemsManager), this);
+        pluginManager.registerEvents(new ItemSpawnListener(this.configurations, this.itemsManager), this);
     }
 
     private void registerCommands()
     {
         this.getCommand("itemsremover").setExecutor(new ItemsRemoverCommand
         (
-                this.configurations.get("messages.yml"),
+                this.configurations,
                 this
         ));
     }

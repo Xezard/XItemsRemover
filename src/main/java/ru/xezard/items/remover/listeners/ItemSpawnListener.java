@@ -19,18 +19,18 @@
 package ru.xezard.items.remover.listeners;
 
 import lombok.AllArgsConstructor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import ru.xezard.items.remover.configurations.Configurations;
 import ru.xezard.items.remover.data.ItemsManager;
 
 @AllArgsConstructor
 public class ItemSpawnListener
 implements Listener
 {
-    private FileConfiguration configuration;
+    private Configurations configurations;
 
     private ItemsManager itemsManager;
 
@@ -41,6 +41,6 @@ implements Listener
 
         item.setCustomNameVisible(true);
 
-        this.itemsManager.addItem(item, this.configuration.getLong("Items.Remove.Default-timer"));
+        this.itemsManager.addItem(item, this.configurations.get("config.yml").getLong("Items.Remove.Default-timer"));
     }
 }
