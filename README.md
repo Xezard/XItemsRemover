@@ -1,7 +1,7 @@
 # XItemsRemover
 
-![Java](https://img.shields.io/badge/Java-8%2B-brightgreen)]
-![Spigot](https://img.shields.io/badge/Tested%20on-Spigot%201.16.3-informational)]
+![Java](https://img.shields.io/badge/Java-8%2B-brightgreen)
+![Spigot](https://img.shields.io/badge/Tested%20on-Spigot%201.16.3-informational)
 [![GitHub](https://img.shields.io/github/license/Xezard/XItemsRemover)](https://github.com/Xezard/XItemsRemover/blob/master/LICENSE) 
 [![Jitpack](https://jitpack.io/v/Xezard/XItemsRemover.svg)](https://jitpack.io/#Xezard/XItemsRemover) 
 ![Lines of code](https://img.shields.io/tokei/lines/github/Xezard/XItemsRemover?label=lines%20of%20code) 
