@@ -10,8 +10,6 @@
 
 XItemsRemover is a simple plugin for Spigot that removes dropped items with a timer displayed on them.
 
-> **Can also work on older spigot versions**
-
 ## Image 
 ![](https://sun9-74.userapi.com/KZPdZwCg5Ho79p7ft7NkcwICFB4ESZMbY_uOrQ/Hp9-IpeW-UQ.jpg)
 
