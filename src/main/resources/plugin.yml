@@ -3,7 +3,7 @@ main: ru.xezard.items.remover.ItemsRemoverPlugin
 description: Removes dropped items with a timer displayed on them!
 author: Xezard
 website: http://xezard.ru
-version: 1.0.2
+version: 1.0.4
 api-version: 1.16
 
 commands:
