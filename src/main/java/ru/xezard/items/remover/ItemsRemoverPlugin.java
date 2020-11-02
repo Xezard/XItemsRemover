@@ -18,16 +18,14 @@
  */
 package ru.xezard.items.remover;
 
+import org.bstats.MetricsLite;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.xezard.items.remover.commands.ItemsRemoverCommand;
 import ru.xezard.items.remover.configurations.Configurations;
 import ru.xezard.items.remover.data.ItemsManager;
-import ru.xezard.items.remover.listeners.ItemDespawnListener;
-import ru.xezard.items.remover.listeners.ItemMergeListener;
-import ru.xezard.items.remover.listeners.ItemSpawnListener;
-import ru.xezard.items.remover.listeners.EntityPickupItemListener;
+import ru.xezard.items.remover.listeners.*;
 
 public class ItemsRemoverPlugin
 extends JavaPlugin
@@ -39,6 +37,8 @@ extends JavaPlugin
     @Override
     public void onEnable()
     {
+        new MetricsLite(this, 9285);
+
         this.configurations.loadConfigurations();
 
         this.itemsManager = new ItemsManager(this.configurations, this);
@@ -60,10 +60,12 @@ extends JavaPlugin
     {
         PluginManager pluginManager = Bukkit.getPluginManager();
 
+        pluginManager.registerEvents(new ChunkLoadListener(this.configurations, this.itemsManager), this);
         pluginManager.registerEvents(new EntityPickupItemListener(this.itemsManager), this);
         pluginManager.registerEvents(new ItemDespawnListener(this.itemsManager), this);
         pluginManager.registerEvents(new ItemMergeListener(this.itemsManager), this);
         pluginManager.registerEvents(new ItemSpawnListener(this.configurations, this.itemsManager), this);
+        pluginManager.registerEvents(new PlayerDeathListener(), this);
     }
 
     private void registerCommands()
@@ -77,11 +79,9 @@ extends JavaPlugin
 
     public void reload()
     {
-        this.itemsManager.clear();
-        this.itemsManager.stopRemoverTask();
-
         this.configurations.reloadConfigurations();
 
-        this.itemsManager.startRemoverTask();
+        this.itemsManager.updateTimeForAll(this.configurations.get("config.yml")
+                .getLong("Items.Remove-timer.Default"));
     }
 }

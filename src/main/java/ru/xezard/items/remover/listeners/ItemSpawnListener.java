@@ -23,8 +23,12 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import ru.xezard.items.remover.configurations.Configurations;
 import ru.xezard.items.remover.data.ItemsManager;
+
+import java.util.List;
 
 @AllArgsConstructor
 public class ItemSpawnListener
@@ -39,8 +43,31 @@ implements Listener
     {
         Item item = event.getEntity();
 
-        item.setCustomNameVisible(true);
+        ItemStack itemStack = item.getItemStack();
 
-        this.itemsManager.addItem(item, this.configurations.get("config.yml").getLong("Items.Remove.Default-timer"));
+        ItemMeta itemMeta = itemStack.getItemMeta();
+
+        if (itemMeta.hasLore())
+        {
+            List<String> lore = itemMeta.getLore();
+
+            String tag = lore.get(lore.size() - 1);
+
+            if (tag.equals("[pdd]"))
+            {
+                lore.remove(lore.size() - 1);
+
+                itemMeta.setLore(lore);
+
+                itemStack.setItemMeta(itemMeta);
+
+                this.itemsManager.addItem(item,
+                        this.configurations.get("config.yml").getLong("Items.Remove-timer.After-player-death"));
+                return;
+            }
+        }
+
+        this.itemsManager.addItem(item,
+                this.configurations.get("config.yml").getLong("Items.Remove-timer.Default"));
     }
 }
