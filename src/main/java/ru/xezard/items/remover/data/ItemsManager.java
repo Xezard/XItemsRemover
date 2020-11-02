@@ -19,7 +19,6 @@
 package ru.xezard.items.remover.data;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Item;
 import org.bukkit.scheduler.BukkitTask;
 import ru.xezard.items.remover.ItemsRemoverPlugin;
@@ -27,17 +26,27 @@ import ru.xezard.items.remover.configurations.Configurations;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ItemsManager
 {
-    // <item, timer in ticks>
-    private Map<Item, Long> items = new ConcurrentHashMap<> ();
+    private List<Map<Item, Long>> items = new ArrayList<Map<Item, Long>> (20)
+    {{
+        for (int i = 0; i < 20; i++)
+        {
+            this.add(i, new ConcurrentHashMap<> ());
+        }
+    }};
 
-    private BukkitTask removerTask;
+    private Map<Integer, Integer> ids = new HashMap<> ();
 
     private Configurations configurations;
 
     private ItemsRemoverPlugin plugin;
+
+    private BukkitTask removerTask;
+
+    private AtomicInteger tick = new AtomicInteger(0);
 
     public ItemsManager(Configurations configurations, ItemsRemoverPlugin plugin)
     {
@@ -46,9 +55,19 @@ public class ItemsManager
         this.plugin = plugin;
     }
 
-    private void clearItems()
+    private synchronized void clearItems()
     {
-        for (Map.Entry<Item, Long> entry : this.items.entrySet())
+        int tick = this.tick.incrementAndGet();
+
+        if (tick == 20)
+        {
+            tick = 0;
+            this.tick.set(0);
+        }
+
+        Map<Item, Long> items = this.items.get(tick);
+
+        for (Map.Entry<Item, Long> entry : items.entrySet())
         {
             Item item = entry.getKey();
 
@@ -59,7 +78,7 @@ public class ItemsManager
                 entry.setValue(time - 1);
 
                 item.setCustomName(this.configurations.get("config.yml").getString("Items.Display-name-format")
-                        .replace("{time}", Long.toString((time + 20) / 20)));
+                        .replace("{time}", Long.toString(time)));
                 continue;
             }
 
@@ -69,18 +88,16 @@ public class ItemsManager
         }
     }
 
+    public void updateTimeForAll(long time)
+    {
+        this.items.forEach((map) ->
+        {
+            map.replaceAll((item, itemTime) -> time);
+        });
+    }
+
     public void startRemoverTask()
     {
-        Bukkit.getWorlds().forEach((world) ->
-        {
-            world.getEntities()
-                 .stream()
-                 .filter(Item.class::isInstance)
-                 .peek((item) -> item.setCustomNameVisible(true))
-                 .forEach((entity) -> this.addItem((Item) entity, this.configurations.get("config.yml")
-                         .getLong("Items.Remove.Default-timer")));
-        });
-
         if (this.configurations.get("config.yml").getBoolean("Items.Remove.Async"))
         {
             this.removerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, this::clearItems, 0, 1);
@@ -89,30 +106,55 @@ public class ItemsManager
         }
     }
 
-    public void addItem(Item item, long timeInTicks)
+    public void addItem(Item item, long time)
     {
-        this.items.put(item, timeInTicks);
+        if (this.ids.containsKey(item.getEntityId()))
+        {
+            return;
+        }
+
+        int currentTick = this.tick.get();
+
+        item.setCustomNameVisible(true);
+
+        this.items.get(currentTick).put(item, time);
+        this.ids.put(item.getEntityId(), currentTick);
     }
 
     public void removeItem(Item item)
     {
-        this.items.remove(item);
+        int tick = this.ids.getOrDefault(item.getEntityId(), -1);
+
+        if (tick == -1)
+        {
+            return;
+        }
+
+        this.items.get(tick).remove(item);
+        this.ids.remove(item.getEntityId());
     }
 
-    public void setItemTimer(Item item, long timeInTicks)
+    public void setItemTimer(Item item, long time)
     {
-        this.items.replace(item, timeInTicks);
+        int tick = this.ids.getOrDefault(item.getEntityId(), -1);
+
+        if (tick == -1)
+        {
+            return;
+        }
+
+        this.items.get(tick).replace(item, time);
     }
 
     public void mergeItems(Item merged, Item target)
     {
         this.removeItem(merged);
-        this.setItemTimer(target, this.configurations.get("config.yml").getLong("Items.Remove.Default-timer"));
+        this.setItemTimer(target, this.configurations.get("config.yml").getLong("Items.Remove-timer.Default"));
     }
 
     public void clear()
     {
-        this.items.clear();
+        this.items.forEach(Map::clear);
     }
 
     public void stopRemoverTask()
