@@ -98,11 +98,15 @@ extends JavaPlugin
                     logger.warning("Can't check for updates: no respond from spigotmc API!");
                     return;
                 }
+                
+                String newVersion = scanner.next(),
+                       currentVersion = this.getDescription().getVersion();
 
-                if (!this.getDescription().getVersion().equals(scanner.next()))
+                if (!currentVersion.equals(newVersion))
                 {
-                    logger.info(ChatColor.YELLOW + "Found a new version of XItemsRemover!");
-                    logger.info(ChatColor.YELLOW + "Check it out: " + ChatColor.GREEN +
+                    logger.info(ChatColor.YELLOW + "Found a new version '" + newVersion + "' of XItemsRemover!");
+                    logger.info(ChatColor.YELLOW + "Current version: '" + currentVersion + "'");
+                    logger.info(ChatColor.YELLOW + "Check out new version here: " + ChatColor.GREEN +
                             "https://www.spigotmc.org/resources/xitemsremover.85123/");
                 }
             } catch (IOException exception) {
