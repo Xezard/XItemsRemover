@@ -20,6 +20,7 @@ package ru.xezard.items.remover.data;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Item;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import ru.xezard.items.remover.ItemsRemoverPlugin;
 import ru.xezard.items.remover.configurations.Configurations;
@@ -71,6 +72,12 @@ public class ItemsManager
         {
             Item item = entry.getKey();
 
+            ItemStack itemStack = item.getItemStack();
+
+            String displayName = itemStack.hasItemMeta() ?
+                    itemStack.getItemMeta().getDisplayName() :
+                    itemStack.getI18NDisplayName();
+
             long time = entry.getValue();
 
             if (time > 0)
@@ -78,7 +85,9 @@ public class ItemsManager
                 entry.setValue(time - 1);
 
                 item.setCustomName(this.configurations.get("config.yml").getString("Items.Display-name-format")
-                        .replace("{time}", Long.toString(time)));
+                        .replace("{time}", Long.toString(time))
+                        .replace("{amount}", Integer.toString(itemStack.getAmount()))
+                        .replace("{display_name}", displayName));
                 continue;
             }
 

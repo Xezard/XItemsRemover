@@ -20,12 +20,19 @@ package ru.xezard.items.remover;
 
 import org.bstats.MetricsLite;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.xezard.items.remover.commands.ItemsRemoverCommand;
 import ru.xezard.items.remover.configurations.Configurations;
 import ru.xezard.items.remover.data.ItemsManager;
 import ru.xezard.items.remover.listeners.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class ItemsRemoverPlugin
 extends JavaPlugin
@@ -47,6 +54,8 @@ extends JavaPlugin
         this.registerCommands();
 
         this.itemsManager.startRemoverTask();
+
+        this.checkUpdates(this.getLogger());
     }
 
     @Override
@@ -75,6 +84,31 @@ extends JavaPlugin
                 this.configurations,
                 this
         ));
+    }
+
+    private void checkUpdates(Logger logger)
+    {
+        Bukkit.getScheduler().runTaskAsynchronously(this, () ->
+        {
+            try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=85123").openStream();
+                 Scanner scanner = new Scanner(inputStream))
+            {
+                if (!scanner.hasNext())
+                {
+                    logger.warning("Can't check for updates: no respond from spigotmc API!");
+                    return;
+                }
+
+                if (!this.getDescription().getVersion().equals(scanner.next()))
+                {
+                    logger.info(ChatColor.YELLOW + "Found a new version of XItemsRemover!");
+                    logger.info(ChatColor.YELLOW + "Check it out: " + ChatColor.GREEN +
+                            "https://www.spigotmc.org/resources/xitemsremover.85123/");
+                }
+            } catch (IOException exception) {
+                logger.warning("Can't check for updates: " + exception.getMessage());
+            }
+        });
     }
 
     public void reload()

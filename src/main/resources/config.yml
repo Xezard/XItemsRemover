@@ -1,5 +1,9 @@
 Items:
-  Display-name-format: "§c⚠ {time}"
+  # available placeholders
+  # {time} - time remaining before remove (in seconds)
+  # {display_name} - display name of itemstack (if empty - used localized material name}
+  # {amount} - itemstack amount
+  Display-name-format: "§c⚠ {time} §7| §f{display_name} §a{amount}x"
   Remove-timer:
     # Timer for removing an item in seconds
     Default: 30
