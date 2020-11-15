@@ -19,3 +19,5 @@ For bugs, questions and discussions please use the [Github Issues](https://githu
 
 ## License
 XItemsRemover is licensed under the Apache-2.0 License. Please see [LICENSE](https://github.com/Xezard/XItemsRemover/blob/master/LICENSE "LICENSE") for more info.
+
+![XItemsRemover stats](https://bstats.org/signatures/bukkit/XItemsRemover.svg)
