@@ -6,7 +6,7 @@
 
     <groupId>ru.xezard</groupId>
     <artifactId>XItemsRemover</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.7</version>
     <build>
         <defaultGoal>clean package install</defaultGoal>
 
