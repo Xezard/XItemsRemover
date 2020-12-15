@@ -19,6 +19,7 @@
 package ru.xezard.items.remover.listeners;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
 public class PlayerDeathListener
 implements Listener
 {
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerDeathEvent event)
     {
         if (event.getKeepInventory() || event.getDrops().isEmpty())
@@ -44,24 +45,26 @@ implements Listener
                         items = new ArrayList<> (drop);
 
         drop.clear();
-        drop.addAll(items.stream()
-                         .peek((itemStack) ->
+        drop.addAll
+        (
+                items.stream()
+                     .peek((itemStack) ->
+                     {
+                         ItemMeta itemMeta = itemStack.getItemMeta();
+
+                         if (itemMeta.hasLore())
                          {
-                             ItemMeta itemMeta = itemStack.getItemMeta();
+                             List<String> lore = itemMeta.getLore();
 
-                             if (itemMeta.hasLore())
-                             {
-                                 List<String> lore = itemMeta.getLore();
+                             lore.add("[pdd]");
 
-                                 lore.add("[pdd]");
+                             itemMeta.setLore(lore);
+                         } else {
+                             itemMeta.setLore(Collections.singletonList("[pdd]"));
+                         }
 
-                                 itemMeta.setLore(lore);
-                             } else {
-                                 itemMeta.setLore(Collections.singletonList("[pdd]"));
-                             }
-
-                             itemStack.setItemMeta(itemMeta);
-                         })
-                         .collect(Collectors.toList()));
+                         itemStack.setItemMeta(itemMeta);
+                     }).collect(Collectors.toList())
+        );
     }
 }
