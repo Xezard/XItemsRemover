@@ -19,6 +19,7 @@
 package ru.xezard.items.remover.listeners;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
 public class PlayerDeathListener
 implements Listener
 {
-    @EventHandler
+    @EventHandler(priority= EventPriority.MONITOR)
     public void onDeath(PlayerDeathEvent event)
     {
         if (event.getKeepInventory() || event.getDrops().isEmpty())
