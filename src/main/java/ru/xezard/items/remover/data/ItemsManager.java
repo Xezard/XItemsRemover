@@ -24,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import ru.xezard.items.remover.ItemsRemoverPlugin;
 import ru.xezard.items.remover.configurations.Configurations;
+import ru.xezard.items.remover.utils.Chat;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -84,10 +85,10 @@ public class ItemsManager
             {
                 entry.setValue(time - 1);
 
-                item.setCustomName(this.configurations.get("config.yml").getString("Items.Display-name-format")
+                item.setCustomName(Chat.colorize(this.configurations.get("config.yml").getString("Items.Display-name-format")
                         .replace("{time}", Long.toString(time))
                         .replace("{amount}", Integer.toString(itemStack.getAmount()))
-                        .replace("{display_name}", displayName));
+                        .replace("{display_name}", displayName)));
                 continue;
             }
 
