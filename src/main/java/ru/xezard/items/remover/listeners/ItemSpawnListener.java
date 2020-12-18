@@ -34,8 +34,6 @@ import java.util.List;
 public class ItemSpawnListener
 implements Listener
 {
-    private Configurations configurations;
-
     private ItemsManager itemsManager;
 
     @EventHandler
@@ -61,13 +59,11 @@ implements Listener
 
                 itemStack.setItemMeta(itemMeta);
 
-                this.itemsManager.addItem(item,
-                        this.configurations.get("config.yml").getLong("Items.Remove-timer.After-player-death"));
+                this.itemsManager.addItem(item, true);
                 return;
             }
         }
 
-        this.itemsManager.addItem(item,
-                this.configurations.get("config.yml").getLong("Items.Remove-timer.Default"));
+        this.itemsManager.addItem(item, false);
     }
 }

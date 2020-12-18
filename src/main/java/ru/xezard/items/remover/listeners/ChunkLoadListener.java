@@ -31,8 +31,6 @@ import ru.xezard.items.remover.data.ItemsManager;
 public class ChunkLoadListener
 implements Listener
 {
-    private Configurations configurations;
-
     private ItemsManager itemsManager;
 
     @EventHandler
@@ -45,7 +43,7 @@ implements Listener
                 continue;
             }
 
-            this.itemsManager.addItem((Item) entity, this.configurations.get("config.yml").getLong("Items.Remove-timer.Default"));
+            this.itemsManager.addItem((Item) entity, false);
         }
     }
 }

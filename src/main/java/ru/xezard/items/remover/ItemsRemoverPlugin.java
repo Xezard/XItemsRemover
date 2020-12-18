@@ -48,7 +48,8 @@ extends JavaPlugin
 
         this.configurations.loadConfigurations();
 
-        this.itemsManager = new ItemsManager(this.configurations, this);
+        this.itemsManager = new ItemsManager(this.configurations, this, this.getLogger());
+        this.itemsManager.loadDropData(this.configurations.get("config.yml"));
 
         this.registerListeners();
         this.registerCommands();
@@ -69,11 +70,11 @@ extends JavaPlugin
     {
         PluginManager pluginManager = Bukkit.getPluginManager();
 
-        pluginManager.registerEvents(new ChunkLoadListener(this.configurations, this.itemsManager), this);
+        pluginManager.registerEvents(new ChunkLoadListener(this.itemsManager), this);
         pluginManager.registerEvents(new EntityPickupItemListener(this.itemsManager), this);
         pluginManager.registerEvents(new ItemDespawnListener(this.itemsManager), this);
         pluginManager.registerEvents(new ItemMergeListener(this.itemsManager), this);
-        pluginManager.registerEvents(new ItemSpawnListener(this.configurations, this.itemsManager), this);
+        pluginManager.registerEvents(new ItemSpawnListener(this.itemsManager), this);
         pluginManager.registerEvents(new PlayerDeathListener(), this);
     }
 
@@ -117,8 +118,11 @@ extends JavaPlugin
 
     public void reload()
     {
+        this.itemsManager.clearDropData();
+
         this.configurations.reloadConfigurations();
 
+        this.itemsManager.loadDropData(this.configurations.get("config.yml"));
         this.itemsManager.updateTimeForAll(this.configurations.get("config.yml")
                 .getLong("Items.Remove-timer.Default"));
     }

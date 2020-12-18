@@ -19,16 +19,22 @@
 package ru.xezard.items.remover.data;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 import ru.xezard.items.remover.ItemsRemoverPlugin;
 import ru.xezard.items.remover.configurations.Configurations;
 import ru.xezard.items.remover.utils.Chat;
+import ru.xezard.items.remover.utils.Materials;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
 
 public class ItemsManager
 {
@@ -42,6 +48,8 @@ public class ItemsManager
 
     private Map<Integer, Integer> ids = new HashMap<> ();
 
+    private Map<Material, DropData> dropData = new HashMap<> ();
+
     private Configurations configurations;
 
     private ItemsRemoverPlugin plugin;
@@ -50,11 +58,44 @@ public class ItemsManager
 
     private AtomicInteger tick = new AtomicInteger(0);
 
-    public ItemsManager(Configurations configurations, ItemsRemoverPlugin plugin)
+    private Logger logger;
+
+    public ItemsManager(Configurations configurations, ItemsRemoverPlugin plugin, Logger logger)
     {
         this.configurations = configurations;
 
         this.plugin = plugin;
+
+        this.logger = logger;
+    }
+
+    public void loadDropData(FileConfiguration config)
+    {
+        ConfigurationSection section = config.getConfigurationSection("Items.Remove-timer.Custom-materials");
+
+        if (section == null)
+        {
+            this.logger.warning("Custom drop data was not loaded.");
+            return;
+        }
+
+        for (String materialName : section.getKeys(false))
+        {
+            String sectionKey = "Items.Remove-timer.Custom-materials." + materialName + ".",
+                   displayName = config.getString(sectionKey + "Display-name");
+
+            Material material = Material.matchMaterial(materialName);
+
+            if (material == null)
+            {
+                this.logger.warning("Can't find material with name '" + materialName + "'. Custom drop section has been skipped!");
+                continue;
+            }
+
+            long timer = config.getLong(sectionKey + "Timer", -1);
+
+            this.dropData.put(material, new DropData(displayName, timer));
+        }
     }
 
     private synchronized void clearItems()
@@ -75,9 +116,16 @@ public class ItemsManager
 
             ItemStack itemStack = item.getItemStack();
 
-            String displayName = itemStack.hasItemMeta() ?
-                    itemStack.getItemMeta().getDisplayName() :
-                    itemStack.getI18NDisplayName();
+            ItemMeta itemMeta = itemStack.getItemMeta();
+
+            Material material = itemStack.getType();
+
+            DropData data = this.dropData.get(material);
+
+            String materialName = Materials.toString(itemStack.getType()),
+                   displayName = itemMeta.hasDisplayName() ? itemMeta.getDisplayName() :
+                           data == null ? materialName : data.getCustomName() == null ?
+                                   materialName : data.getCustomName();
 
             long time = entry.getValue();
 
@@ -102,7 +150,10 @@ public class ItemsManager
     {
         this.items.forEach((map) ->
         {
-            map.replaceAll((item, itemTime) -> time);
+            map.replaceAll((item, itemTime) ->
+            {
+                return time;
+            });
         });
     }
 
@@ -116,18 +167,40 @@ public class ItemsManager
         }
     }
 
-    public void addItem(Item item, long time)
+    private long getTimeByMaterial(Material material, boolean afterDeath)
+    {
+        DropData data = this.dropData.get(material);
+
+        FileConfiguration config = this.configurations.get("config.yml");
+
+        long time = afterDeath ? config.getLong("Items.Remove-timer.After-player-death") :
+                                 config.getLong("Items.Remove-timer.Default");
+
+        if (data != null)
+        {
+            long timer = data.getTimer();
+
+            if (timer > 0)
+            {
+                time = timer;
+            }
+        }
+
+        return time;
+    }
+
+    public void addItem(Item item, boolean afterDeath)
     {
         if (this.ids.containsKey(item.getEntityId()))
         {
             return;
         }
 
-        int currentTick = this.tick.get();
-
         item.setCustomNameVisible(true);
 
-        this.items.get(currentTick).put(item, time);
+        int currentTick = this.tick.get();
+
+        this.items.get(currentTick).put(item, this.getTimeByMaterial(item.getItemStack().getType(), afterDeath));
         this.ids.put(item.getEntityId(), currentTick);
     }
 
@@ -144,7 +217,7 @@ public class ItemsManager
         this.ids.remove(item.getEntityId());
     }
 
-    public void setItemTimer(Item item, long time)
+    public void setItemTimer(Item item)
     {
         int tick = this.ids.getOrDefault(item.getEntityId(), -1);
 
@@ -153,13 +226,18 @@ public class ItemsManager
             return;
         }
 
-        this.items.get(tick).replace(item, time);
+        this.items.get(tick).replace(item, this.getTimeByMaterial(item.getItemStack().getType(), false));
     }
 
     public void mergeItems(Item merged, Item target)
     {
         this.removeItem(merged);
-        this.setItemTimer(target, this.configurations.get("config.yml").getLong("Items.Remove-timer.Default"));
+        this.setItemTimer(target);
+    }
+
+    public void clearDropData()
+    {
+        this.dropData.clear();
     }
 
     public void clear()

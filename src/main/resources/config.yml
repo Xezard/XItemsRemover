@@ -9,3 +9,11 @@ Items:
     Default: 30
     After-player-death: 180
     Async: true
+    Custom-materials:
+      COBBLESTONE:
+        Timer: 15
+        Display-name: "Cobblestone :D"
+      STONE:
+        Timer: 10
+      GRASS:
+        Display-name: "Grazz"
