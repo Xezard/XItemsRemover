@@ -9,6 +9,14 @@ Items:
     Default: 30
     After-player-death: 180
     Async: true
+    # Section for specifying a unique timer or display name
+    # for certain materials
+    # Format:
+    # <material name>:
+    #   <timer>: 15
+    #   <display name>: "Test"
+    # If you only need to edit one parameter
+    # (name or time) you can just delete the line with the second.
     Custom-materials:
       COBBLESTONE:
         Timer: 15
