@@ -123,7 +123,6 @@ extends JavaPlugin
         this.configurations.reloadConfigurations();
 
         this.itemsManager.loadDropData(this.configurations.get("config.yml"));
-        this.itemsManager.updateTimeForAll(this.configurations.get("config.yml")
-                .getLong("Items.Remove-timer.Default"));
+        this.itemsManager.updateTimeForAll();
     }
 }

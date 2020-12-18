@@ -146,13 +146,13 @@ public class ItemsManager
         }
     }
 
-    public void updateTimeForAll(long time)
+    public void updateTimeForAll()
     {
         this.items.forEach((map) ->
         {
             map.replaceAll((item, itemTime) ->
             {
-                return time;
+                return this.getTimeByMaterial(item.getItemStack().getType(), false);
             });
         });
     }
