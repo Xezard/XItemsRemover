@@ -18,7 +18,7 @@
  */
 package ru.xezard.items.remover;
 
-import org.bstats.MetricsLite;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
@@ -44,7 +44,7 @@ extends JavaPlugin
     @Override
     public void onEnable()
     {
-        new MetricsLite(this, 9285);
+        new Metrics(this, 9285);
 
         this.configurations.loadConfigurations();
 
