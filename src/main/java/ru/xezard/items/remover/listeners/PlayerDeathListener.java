@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class PlayerDeathListener
 implements Listener
 {
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onDeath(PlayerDeathEvent event)
     {
         if (event.getKeepInventory() || event.getDrops().isEmpty())

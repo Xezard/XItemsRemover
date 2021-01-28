@@ -96,20 +96,23 @@ extends JavaPlugin
             {
                 if (!scanner.hasNext())
                 {
-                    logger.warning("Can't check for updates: no respond from spigotmc API!");
+                    logger.warning("Can't check for updates: no respond from spigotmc.org API!");
                     return;
                 }
                 
                 String newVersion = scanner.next(),
                        currentVersion = this.getDescription().getVersion();
 
-                if (!currentVersion.equals(newVersion))
+                if (currentVersion.equals(newVersion))
                 {
-                    logger.info(ChatColor.YELLOW + "Found a new version '" + newVersion + "' of XItemsRemover!");
-                    logger.info(ChatColor.YELLOW + "Current version: '" + currentVersion + "'");
-                    logger.info(ChatColor.YELLOW + "Check out new version here: " + ChatColor.GREEN +
-                            "https://www.spigotmc.org/resources/xitemsremover.85123/");
+                    logger.info(ChatColor.GREEN + "The latest version of the plugin is used.");
+                    return;
                 }
+
+                logger.info(ChatColor.YELLOW + "Found a new version '" + newVersion + "' of XItemsRemover!");
+                logger.info(ChatColor.YELLOW + "Current version: '" + currentVersion + "'");
+                logger.info(ChatColor.YELLOW + "Check out new version here: " + ChatColor.GREEN +
+                        "https://www.spigotmc.org/resources/xitemsremover.85123/");
             } catch (IOException exception) {
                 logger.warning("Can't check for updates: " + exception.getMessage());
             }

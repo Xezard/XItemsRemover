@@ -6,7 +6,7 @@
 
     <groupId>ru.xezard</groupId>
     <artifactId>XItemsRemover</artifactId>
-    <version>1.0.9</version>
+    <version>1.1.0</version>
     <build>
         <defaultGoal>clean package install</defaultGoal>
 
@@ -28,7 +28,15 @@
                 <version>3.2.4</version>
                 <configuration>
                     <minimizeJar>true</minimizeJar>
+
+                    <relocations>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>ru.xezard.items.remover</shadedPattern>
+                        </relocation>
+                    </relocations>
                 </configuration>
+
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -71,7 +79,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.10</version>
+            <version>1.18.16</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
