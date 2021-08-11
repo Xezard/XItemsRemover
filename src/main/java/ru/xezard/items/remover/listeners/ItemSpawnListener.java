@@ -40,11 +40,6 @@ implements Listener
     {
         Item item = event.getEntity();
 
-        // fix for slimefun
-        if (item.hasMetadata("no_pickup")) {
-            return;
-        }
-
         ItemStack itemStack = item.getItemStack();
 
         ItemMeta itemMeta = itemStack.getItemMeta();
