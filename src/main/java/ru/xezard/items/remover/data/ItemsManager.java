@@ -191,7 +191,8 @@ public class ItemsManager
 
     public void addItem(Item item, boolean afterDeath)
     {
-        if (this.ids.containsKey(item.getEntityId()))
+        if (this.ids.containsKey(item.getEntityId()) || 
+            item.hasMetadata("no_pickup")) // fix for slimefun
         {
             return;
         }
