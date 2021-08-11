@@ -114,6 +114,12 @@ public class ItemsManager
         {
             Item item = entry.getKey();
 
+            // fix for slimefun
+            if (item.hasMetadata("no_pickup")) {
+                this.removeItem(item);
+                continue;
+            }
+
             ItemStack itemStack = item.getItemStack();
 
             ItemMeta itemMeta = itemStack.getItemMeta();
