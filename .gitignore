@@ -1,0 +1,9 @@
+/target/
+/.apt_generated/
+/.apt_generated_tests/
+/.gradle/
+/build/
+.classpath
+.project
+.settings/
+bin/

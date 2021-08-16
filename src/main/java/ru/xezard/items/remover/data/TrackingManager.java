@@ -18,28 +18,40 @@
  */
 package ru.xezard.items.remover.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.Optional;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.entity.Entity;
+import org.jetbrains.annotations.NotNull;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent.Builder;
 import ru.xezard.items.remover.ItemsRemoverPlugin;
 import ru.xezard.items.remover.configurations.Configurations;
 import ru.xezard.items.remover.utils.Chat;
 import ru.xezard.items.remover.utils.Materials;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
-
 public class TrackingManager
 {
-    private List<Map<Entity, Long>> entities = new ArrayList<Map<Entity, Long>> (20)
+	private final static String TRANSLATED_MATERIAL_NAME = "{translated_material_name}";
+
+	private List<Map<Entity, Long>> entities = new ArrayList<Map<Entity, Long>> (20)
     {{
         for (int i = 0; i < 20; i++)
         {
@@ -139,7 +151,7 @@ public class TrackingManager
 
             long time = entry.getValue();
 
-            Optional<String> entityDisplayNameFormat = Optional.ofNullable(data.getDisplayNames().ceilingEntry(time))
+            Optional<String> entityDisplayNameFormat = Optional.ofNullable(data != null ? data.getDisplayNames().ceilingEntry(time) : null)
                                                                .map(Map.Entry::getValue);
 
             String entityDisplayName = "",
@@ -158,8 +170,8 @@ public class TrackingManager
                 ItemMeta itemMeta = itemStack.getItemMeta();
 
                 entityDisplayName = itemMeta.hasDisplayName() ? 
-                                    itemMeta.getDisplayName() : 
-                                    Materials.toString(itemStack.getType());
+                                    itemMeta.getDisplayName() :
+                                    	TRANSLATED_MATERIAL_NAME;
 
                 amount = itemStack.getAmount();
             }
@@ -170,10 +182,33 @@ public class TrackingManager
             {
                 entry.setValue(time - 1);
 
-                entity.setCustomName(Chat.colorize(displayName
-                      .replace("{time}", Long.toString(time))
-                      .replace("{amount}", Integer.toString(amount))
-                      .replace("{display_name}", entityDisplayName)));
+                final String base = Chat.colorize(displayName
+                        .replace("{time}", Long.toString(time))
+                        .replace("{amount}", Integer.toString(amount)));
+
+                final int dn_idx = base.indexOf("{display_name}");
+                final Builder customNameBuilder;
+
+                if(entity instanceof Item && dn_idx != -1) {
+
+                	customNameBuilder = Component.text().content(base.substring(0, dn_idx));
+
+                	final int tmn_idx = entityDisplayName.indexOf(TRANSLATED_MATERIAL_NAME);
+
+                	if(tmn_idx != -1) {
+                		customNameBuilder.append(Component.translatable(((Item) entity).
+                				getItemStack().getType()));
+                	} else {
+                		customNameBuilder.append(Component.text(entityDisplayName));
+                	}
+
+                	customNameBuilder.append(Component.text(base.substring(dn_idx + 14)));
+
+                } else {
+                	customNameBuilder = Component.text().content(base);
+                }
+
+                entity.customName(customNameBuilder.build());
                 continue;
             }
 
