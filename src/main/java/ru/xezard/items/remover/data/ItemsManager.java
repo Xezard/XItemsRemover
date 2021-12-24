@@ -219,6 +219,9 @@ public class ItemsManager
 
         if (this.ids.containsKey(entityId) || 
             !this.tracked(material) ||
+            this.configurations.get("config.yml")
+                               .getStringList("Restricted-worlds")
+                               .contains(item.getWorld().getName()) ||
             item.hasMetadata("no_pickup")) // fix for slimefun
         {
             return;
