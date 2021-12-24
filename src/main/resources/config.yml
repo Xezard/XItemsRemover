@@ -1,9 +1,13 @@
 Items:
-  # available placeholders
+  # Format:
+  # '(timer)': "(format)"
+  # Available placeholders:
   # {time} - time remaining before remove (in seconds)
   # {display_name} - display name of itemstack (if empty - used localized material name}
   # {amount} - itemstack amount
-  Display-name-format: "§c⚠ {time} §7| §f{display_name} §a{amount}x"
+  Display-name-format: 
+    '1': "§c⚠ {time} §7| §f{display_name} §a{amount}x"
+    '10': "§c{time}"
   Remove-timer:
     # Timer for removing an item in seconds
     Default: 30
@@ -25,3 +29,12 @@ Items:
         Timer: 10
       GRASS:
         Display-name: "Grazz"
+      SAND:
+        Timer: 0
+        
+
+      
+   
+# Worlds in which plugin does not work
+Restricted-worlds:
+- restricted_world
