@@ -30,11 +30,19 @@ import ru.xezard.items.remover.data.ItemsManager;
 public class ChunkLoadListener
 implements Listener
 {
+    private Configurations configurations;
+
     private ItemsManager itemsManager;
 
     @EventHandler
     public void onLoad(ChunkLoadEvent event)
     {
+        if (this.configurations.get("config.yml").getStringList("Restricted-worlds")
+                .contains(event.getWorld().getName())) 
+        {
+            return;
+        }
+
         for (Entity entity : event.getChunk().getEntities())
         {
             if (!(entity instanceof Item))
