@@ -76,28 +76,27 @@ public class ItemsManager
         ConfigurationSection customMaterialsSection = config.getConfigurationSection("Items.Remove-timer.Custom-materials"),
                              displayNamesSection = config.getConfigurationSection("Items.Display-name-formats");
 
-        if (customMaterialsSection == null)
+        if (customMaterialsSection != null)
         {
-            this.logger.warning("Custom drop data was not loaded.");
-            return;
-        }
-
-        for (String materialName : customMaterialsSection.getKeys(false))
-        {
-            String sectionKey = "Items.Remove-timer.Custom-materials." + materialName + ".",
-                   displayName = config.getString(sectionKey + "Display-name");
-
-            Material material = Material.matchMaterial(materialName);
-
-            if (material == null)
+            for (String materialName : customMaterialsSection.getKeys(false))
             {
-                this.logger.warning("Can't find material with name '" + materialName + "'. Custom drop section has been skipped!");
-                continue;
+                String sectionKey = "Items.Remove-timer.Custom-materials." + materialName + ".",
+                       displayName = config.getString(sectionKey + "Display-name");
+
+                Material material = Material.matchMaterial(materialName);
+
+                if (material == null)
+                {
+                    this.logger.warning("Can't find material with name '" + materialName + "'. Custom drop section has been skipped!");
+                    continue;
+                }
+
+                long timer = config.getLong(sectionKey + "Timer", -1);
+
+                this.dropData.put(material, new DropData(displayName, timer));
             }
-
-            long timer = config.getLong(sectionKey + "Timer", -1);
-
-            this.dropData.put(material, new DropData(displayName, timer));
+        } else {
+            this.logger.warning("Custom drop data was not loaded.");
         }
 
         if (displayNamesSection == null) 
