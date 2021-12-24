@@ -5,7 +5,7 @@ Items:
   # {time} - time remaining before remove (in seconds)
   # {display_name} - display name of itemstack (if empty - used localized material name}
   # {amount} - itemstack amount
-  Display-name-format: 
+  Display-name-formats: 
     '1': "§c⚠ {time} §7| §f{display_name} §a{amount}x"
     '10': "§c{time}"
   Remove-timer:
@@ -19,8 +19,10 @@ Items:
     # <material name>:
     #   <timer>: 15
     #   <display name>: "Test"
+    #   <tracked>: false
     # If you only need to edit one parameter
     # (name or time) you can just delete the line with the second.
+    # If you need the plugin not to track a certain type of materials, then set 'tracked: false'
     Custom-materials:
       COBBLESTONE:
         Timer: 15
@@ -30,9 +32,7 @@ Items:
       GRASS:
         Display-name: "Grazz"
       SAND:
-        Timer: 0
-      SANDSTONE:
-        Display-name: ""
+        Tracked: false
        
 # Worlds in which plugin does not work
 Restricted-worlds:
