@@ -22,17 +22,28 @@ import lombok.AllArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemMergeEvent;
+import ru.xezard.items.remover.configurations.Configurations;
 import ru.xezard.items.remover.data.ItemsManager;
 
 @AllArgsConstructor
 public class ItemMergeListener
 implements Listener
 {
+    private Configurations configurations;
+
     private ItemsManager itemsManager;
 
     @EventHandler
     public void onMerge(ItemMergeEvent event)
     {
-        this.itemsManager.mergeItems(event.getEntity(), event.getTarget());
+        Entity entity = event.getEntity();
+
+        if (this.configurations.get("config.yml").getStringList("Restricted-worlds")
+                .contains(entity.getWorld().getName())) 
+        {
+            return;
+        }
+
+        this.itemsManager.mergeItems(entity, event.getTarget());
     }
 }
