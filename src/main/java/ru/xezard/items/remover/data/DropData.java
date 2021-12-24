@@ -26,4 +26,6 @@ public class DropData
     String customName;
 
     long timer;
+
+    boolean tracked;
 }
