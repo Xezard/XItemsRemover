@@ -31,10 +31,9 @@ Items:
         Display-name: "Grazz"
       SAND:
         Timer: 0
-        
-
-      
-   
+      SANDSTONE:
+        Display-name: ""
+       
 # Worlds in which plugin does not work
 Restricted-worlds:
-- restricted_world
+- "restricted_world"
