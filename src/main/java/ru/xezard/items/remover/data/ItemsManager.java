@@ -46,6 +46,8 @@ public class ItemsManager
         }
     }};
 
+    private NavigableMap<Long, String> displayNames = new TreeMap<> ();
+
     private Map<Integer, Integer> ids = new HashMap<> ();
 
     private Map<Material, DropData> dropData = new HashMap<> ();
@@ -69,17 +71,18 @@ public class ItemsManager
         this.logger = logger;
     }
 
-    public void loadDropData(FileConfiguration config)
+    public void load(FileConfiguration config)
     {
-        ConfigurationSection section = config.getConfigurationSection("Items.Remove-timer.Custom-materials");
+        ConfigurationSection customMaterialsSection = config.getConfigurationSection("Items.Remove-timer.Custom-materials"),
+                             displayNamesSection = config.getConfigurationSection("Items.Display-name-formats");
 
-        if (section == null)
+        if (customMaterialsSection == null)
         {
             this.logger.warning("Custom drop data was not loaded.");
             return;
         }
 
-        for (String materialName : section.getKeys(false))
+        for (String materialName : customMaterialsSection.getKeys(false))
         {
             String sectionKey = "Items.Remove-timer.Custom-materials." + materialName + ".",
                    displayName = config.getString(sectionKey + "Display-name");
@@ -95,6 +98,17 @@ public class ItemsManager
             long timer = config.getLong(sectionKey + "Timer", -1);
 
             this.dropData.put(material, new DropData(displayName, timer));
+        }
+
+        if (displayNamesSection == null) 
+        {
+            this.logger.warning("Can't find display names section for items!");
+            return;
+        }
+
+        for (String timerString : displayNamesSection.getKeys(false))
+        {
+            this.displayNames.put(Long.parseLong(timerString), config.getString("Items.Display-name-formats." + timerString));
         }
     }
 
@@ -139,7 +153,8 @@ public class ItemsManager
             {
                 entry.setValue(time - 1);
 
-                item.setCustomName(Chat.colorize(this.configurations.get("config.yml").getString("Items.Display-name-format")
+                item.setCustomName(Chat.colorize(Optional.ofNullable(this.displayNames.ceilingEntry(time).getValue())
+                        .orElse(this.displayNames.firstEntry().getValue()))
                         .replace("{time}", Long.toString(time))
                         .replace("{amount}", Integer.toString(itemStack.getAmount()))
                         .replace("{display_name}", displayName)));
@@ -242,8 +257,9 @@ public class ItemsManager
         this.setItemTimer(target);
     }
 
-    public void clearDropData()
+    public void clearData()
     {
+        this.displayNames.clear();
         this.dropData.clear();
     }
 
