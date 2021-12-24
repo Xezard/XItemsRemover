@@ -258,6 +258,13 @@ public class ItemsManager
         this.setItemTimer(target);
     }
 
+    public boolean tracked(Material material) 
+    {
+        DropData data = this.dropData.get(material);
+
+        return data == null || data.isTracked();
+    }
+
     public void clearData()
     {
         this.displayNames.clear();
