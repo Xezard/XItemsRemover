@@ -213,7 +213,12 @@ public class ItemsManager
 
     public void addItem(Item item, boolean afterDeath)
     {
-        if (this.ids.containsKey(item.getEntityId()) || 
+        Material material = item.getItemStack().getType();
+
+        int entityId = item.getEntityId();
+
+        if (this.ids.containsKey(entityId) || 
+            !this.tracked(material) ||
             item.hasMetadata("no_pickup")) // fix for slimefun
         {
             return;
@@ -223,8 +228,8 @@ public class ItemsManager
 
         int currentTick = this.tick.get();
 
-        this.items.get(currentTick).put(item, this.getTimeByMaterial(item.getItemStack().getType(), afterDeath));
-        this.ids.put(item.getEntityId(), currentTick);
+        this.items.get(currentTick).put(item, this.getTimeByMaterial(material, afterDeath));
+        this.ids.put(entityId, currentTick);
     }
 
     public void removeItem(Item item)
