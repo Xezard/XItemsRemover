@@ -24,26 +24,17 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
-import ru.xezard.items.remover.configurations.Configurations;
 import ru.xezard.items.remover.data.ItemsManager;
 
 @AllArgsConstructor
 public class ChunkLoadListener
 implements Listener
 {
-    private Configurations configurations;
-
     private ItemsManager itemsManager;
 
     @EventHandler
     public void onLoad(ChunkLoadEvent event)
     {
-        if (this.configurations.get("config.yml").getStringList("Restricted-worlds")
-                .contains(event.getWorld().getName())) 
-        {
-            return;
-        }
-
         for (Entity entity : event.getChunk().getEntities())
         {
             if (!(entity instanceof Item))
