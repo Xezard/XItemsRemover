@@ -49,7 +49,7 @@ extends JavaPlugin
         this.configurations.loadConfigurations();
 
         this.itemsManager = new ItemsManager(this.configurations, this, this.getLogger());
-        this.itemsManager.loadDropData(this.configurations.get("config.yml"));
+        this.itemsManager.load(this.configurations.get("config.yml"));
 
         this.registerListeners();
         this.registerCommands();
@@ -121,11 +121,11 @@ extends JavaPlugin
 
     public void reload()
     {
-        this.itemsManager.clearDropData();
+        this.itemsManager.clearData();
 
         this.configurations.reloadConfigurations();
 
-        this.itemsManager.loadDropData(this.configurations.get("config.yml"));
+        this.itemsManager.load(this.configurations.get("config.yml"));
         this.itemsManager.updateTimeForAll();
     }
 }
