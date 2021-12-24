@@ -93,7 +93,9 @@ public class ItemsManager
 
                 long timer = config.getLong(sectionKey + "Timer", -1);
 
-                this.dropData.put(material, new DropData(displayName, timer));
+                boolean tracked = config.getBoolean(sectionKey + "Tracked");
+
+                this.dropData.put(material, new DropData(displayName, timer, tracked));
             }
         } else {
             this.logger.warning("Custom drop data was not loaded.");
