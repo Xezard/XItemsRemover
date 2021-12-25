@@ -105,7 +105,7 @@ public class TrackingManager
         }
     }
 
-    private synchronized void clearItems()
+    private synchronized void clearEntities()
     {
         int tick = this.tick.incrementAndGet();
 
@@ -137,9 +137,9 @@ public class TrackingManager
 
                 Material material = itemStack.getType();
 
-                TrackData data = this.trackData.get(material);
+                TrackData data = this.trackData.get(material.name());
 
-                String materialName = Materials.toString(itemStack.getType()),
+                String materialName = Materials.toString(material),
                        displayName = itemMeta.hasDisplayName() ? itemMeta.getDisplayName() :
                                data == null ? materialName : data.getCustomName() == null ?
                                        materialName : data.getCustomName();
@@ -170,7 +170,7 @@ public class TrackingManager
         {
             map.replaceAll((entity, entityTime) ->
             {
-                return this.getTimeByMaterial(item.getItemStack().getType(), false);
+                return this.getTimeByEntity(entity, false);
             });
         });
     }
@@ -179,15 +179,24 @@ public class TrackingManager
     {
         if (this.configurations.get("config.yml").getBoolean("Items.Remove.Async"))
         {
-            this.removerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, this::clearItems, 0, 1);
+            this.removerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, this::clearEntities, 0, 1);
         } else {
-            this.removerTask = Bukkit.getScheduler().runTaskTimer(this.plugin, this::clearItems, 0, 1);
+            this.removerTask = Bukkit.getScheduler().runTaskTimer(this.plugin, this::clearEntities, 0, 1);
         }
     }
 
-    private long getTimeByType(Entity entity, boolean afterDeath)
+    private long getTimeByEntity(Entity entity, boolean afterDeath)
     {
-        TrackData data = this.trackData.get(material);
+        String typeName = entity.getType().name();
+
+        if (entity instanceof Item)
+        {
+            Item item = (Item) entity;
+
+            typeName = item.getItemStack().getType().name();
+        }
+
+        TrackData data = this.trackData.get(typeName);
 
         FileConfiguration config = this.configurations.get("config.yml");
 
@@ -209,12 +218,19 @@ public class TrackingManager
 
     public void addEntity(Entity entity, boolean afterDeath)
     {
-        Material material = item.getItemStack().getType();
+        String typeName = entity.getType().name();
+
+        if (entity instanceof Item)
+        {
+            Item item = (Item) entity;
+
+            typeName = item.getItemStack().getType().name();
+        }
 
         int entityId = item.getEntityId();
 
         if (this.ids.containsKey(entityId) || 
-            !this.tracked(material) ||
+            !this.tracked(typeName) ||
             this.configurations.get("config.yml")
                                .getStringList("Restricted-worlds")
                                .contains(item.getWorld().getName()) ||
@@ -223,11 +239,11 @@ public class TrackingManager
             return;
         }
 
-        item.setCustomNameVisible(true);
+        entity.setCustomNameVisible(true);
 
         int currentTick = this.tick.get();
 
-        this.items.get(currentTick).put(item, this.getTimeByMaterial(material, afterDeath));
+        this.entities.get(currentTick).put(entity, this.getTimeByType(entity, afterDeath));
         this.ids.put(entityId, currentTick);
     }
 
@@ -241,7 +257,7 @@ public class TrackingManager
             return;
         }
 
-        this.entities.get(tick).remove(item);
+        this.entities.get(tick).remove(entity);
         this.ids.remove(entityId);
     }
 
@@ -263,9 +279,9 @@ public class TrackingManager
         this.setEntityTimer(target);
     }
 
-    public boolean tracked(Material material) 
+    public boolean tracked(String typeName) 
     {
-        TrackData data = this.trackData.get(material);
+        TrackData data = this.trackData.get(typeName);
 
         return data == null || data.isTracked();
     }
