@@ -70,12 +70,12 @@ extends JavaPlugin
     {
         PluginManager pluginManager = Bukkit.getPluginManager();
 
-        pluginManager.registerEvents(new ChunkLoadListener(this.configurations, this.itemsManager), this);
+        pluginManager.registerEvents(new ChunkLoadListener(this.itemsManager), this);
         pluginManager.registerEvents(new EntityPickupItemListener(this.itemsManager), this);
         pluginManager.registerEvents(new ItemDespawnListener(this.itemsManager), this);
         pluginManager.registerEvents(new ItemMergeListener(this.itemsManager), this);
         pluginManager.registerEvents(new ItemSpawnListener(this.itemsManager), this);
-        pluginManager.registerEvents(new PlayerDeathListener(), this);
+        pluginManager.registerEvents(new PlayerDeathListener(this.configurations, this.itemsManager), this);
     }
 
     private void registerCommands()
