@@ -81,7 +81,7 @@ public class TrackingManager
         {
             for (String typeName : customMaterialsSection.getKeys(false))
             {
-                String sectionKey = "Items.Remove-timer.Custom-materials." + materialName + ".",
+                String sectionKey = "Items.Remove-timer.Custom-materials." + typeName + ".",
                        displayName = config.getString(sectionKey + "Display-name");
 
                 long timer = config.getLong(sectionKey + "Timer", -1);
@@ -124,9 +124,16 @@ public class TrackingManager
 
             // fix for slimefun
             if (entity.hasMetadata("no_pickup")) {
-                this.removeEntity(item);
+                this.removeEntity(entity);
                 continue;
             }
+
+            long time = entry.getValue();
+
+            String entityDisplayName = "",
+                   displayName = this.displayNames.ceilingEntry(time).getValue();
+
+            int amount = 1;
 
             if (entity instanceof Item)
             {
@@ -140,26 +147,27 @@ public class TrackingManager
 
                 TrackData data = this.trackData.get(material.name());
 
-                String materialName = Materials.toString(material),
-                       displayName = itemMeta.hasDisplayName() ? itemMeta.getDisplayName() :
-                               data == null ? materialName : data.getCustomName() == null ?
-                                       materialName : data.getCustomName();
-            }
+                String materialName = Materials.toString(material);
 
-            long time = entry.getValue();
+                entityDisplayName = itemMeta.hasDisplayName() ? itemMeta.getDisplayName() :
+                           data == null ? materialName : data.getCustomName() == null ?
+                                  materialName : data.getCustomName();
+
+                amount = itemStack.getAmount();
+            }
 
             if (time > 0)
             {
                 entry.setValue(time - 1);
 
-                entity.setCustomName(Chat.colorize(this.displayNames.ceilingEntry(time).getValue()
+                entity.setCustomName(Chat.colorize(displayName
                       .replace("{time}", Long.toString(time))
-                      .replace("{amount}", Integer.toString(itemStack.getAmount()))
-                      .replace("{display_name}", displayName)));
+                      .replace("{amount}", Integer.toString(amount))
+                      .replace("{display_name}", entityDisplayName)));
                 continue;
             }
 
-            this.removeEntity(item);
+            this.removeEntity(entity);
 
             entity.remove();
         }
