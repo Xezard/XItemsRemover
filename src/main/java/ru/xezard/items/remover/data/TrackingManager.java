@@ -50,7 +50,7 @@ public class TrackingManager
 
     private Map<Integer, Integer> ids = new HashMap<> ();
 
-    private Map<Material, DropData> dropData = new HashMap<> ();
+    private Map<Material, TrackData> trackData = new HashMap<> ();
 
     private Configurations configurations;
 
@@ -95,7 +95,7 @@ public class TrackingManager
 
                 boolean tracked = config.getBoolean(sectionKey + "Tracked");
 
-                this.dropData.put(material, new DropData(displayName, timer, tracked));
+                this.trackData.put(material, new TrackData(displayName, timer, tracked));
             }
         } else {
             this.logger.warning("Custom drop data was not loaded.");
@@ -145,7 +145,7 @@ public class TrackingManager
 
                 Material material = itemStack.getType();
 
-                DropData data = this.dropData.get(material);
+                TrackData data = this.trackData.get(material);
 
                 String materialName = Materials.toString(itemStack.getType()),
                        displayName = itemMeta.hasDisplayName() ? itemMeta.getDisplayName() :
@@ -196,7 +196,7 @@ public class TrackingManager
 
     private long getTimeByType(Entity entity, boolean afterDeath)
     {
-        DropData data = this.dropData.get(material);
+        TrackData data = this.trackData.get(material);
 
         FileConfiguration config = this.configurations.get("config.yml");
 
@@ -273,7 +273,7 @@ public class TrackingManager
 
     public boolean tracked(Material material) 
     {
-        DropData data = this.dropData.get(material);
+        TrackData data = this.trackData.get(material);
 
         return data == null || data.isTracked();
     }
