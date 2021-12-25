@@ -244,13 +244,13 @@ public class TrackingManager
 
         int currentTick = this.tick.get();
 
-        this.entities.get(currentTick).put(entity, this.getTimeByType(entity, afterDeath));
+        this.entities.get(currentTick).put(entity, this.getTimeByEntity(entity, afterDeath));
         this.ids.put(entityId, currentTick);
     }
 
     public void removeEntity(Entity entity)
     {
-        int entityId = entity.getId(),
+        int entityId = entity.getEntityId(),
             tick = this.ids.getOrDefault(entityId, -1);
 
         if (tick == -1)
@@ -271,7 +271,7 @@ public class TrackingManager
             return;
         }
 
-        this.entities.get(tick).replace(entity, this.getTimeByType(entity, false));
+        this.entities.get(tick).replace(entity, this.getTimeByEntity(entity, false));
     }
 
     public void mergeItems(Item merged, Item target)
