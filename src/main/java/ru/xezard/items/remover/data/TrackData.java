@@ -21,7 +21,7 @@ package ru.xezard.items.remover.data;
 import lombok.Value;
 
 @Value
-public class DropData
+public class TrackData
 {
     String customName;
 
