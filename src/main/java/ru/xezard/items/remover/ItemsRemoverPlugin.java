@@ -50,7 +50,7 @@ extends JavaPlugin
 
         this.trackingManager = new TrackingManager(this.configurations, this, this.getLogger());
         this.trackingManager.load(this.configurations.get("config.yml"));
-        this.trackingManager.startRemoverTask()
+        this.trackingManager.startRemoverTask();
 
         this.registerListeners();
         this.registerCommands();
