@@ -32,8 +32,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import ​com.google.common.collect​.Lists;
-
 import ru.xezard.items.remover.configurations.Configurations;
 import ru.xezard.items.remover.data.ItemsManager;
 
