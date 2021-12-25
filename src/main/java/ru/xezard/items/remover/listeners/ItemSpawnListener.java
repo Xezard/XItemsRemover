@@ -25,7 +25,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import ru.xezard.items.remover.data.TrackedManager;
+import ru.xezard.items.remover.data.TrackingManager;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ import java.util.List;
 public class ItemSpawnListener
 implements Listener
 {
-    private TrackedManager trackedManager;
+    private TrackingManager trackingManager;
 
     @EventHandler
     public void onItemSpawn(ItemSpawnEvent event)
@@ -58,11 +58,11 @@ implements Listener
 
                 itemStack.setItemMeta(itemMeta);
 
-                this.trackedManager.addItem(item, true);
+                this.trackingManager.addEntity(item, true);
                 return;
             }
         }
 
-        this.trackedManager.addItem(item, false);
+        this.trackingManager.addEntity(item, false);
     }
 }
