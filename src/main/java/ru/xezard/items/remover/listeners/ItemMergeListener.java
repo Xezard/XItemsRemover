@@ -22,17 +22,17 @@ import lombok.AllArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemMergeEvent;
-import ru.xezard.items.remover.data.ItemsManager;
+import ru.xezard.items.remover.data.TrackedManager;
 
 @AllArgsConstructor
 public class ItemMergeListener
 implements Listener
 {
-    private ItemsManager itemsManager;
+    private TrackedManager trackedManager;
 
     @EventHandler
     public void onMerge(ItemMergeEvent event)
     {
-        this.itemsManager.mergeItems(event.getEntity(), event.getTarget());
+        this.trackedManager.mergeItems(event.getEntity(), event.getTarget());
     }
 }
