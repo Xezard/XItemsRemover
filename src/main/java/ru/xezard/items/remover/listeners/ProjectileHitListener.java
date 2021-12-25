@@ -24,13 +24,13 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import ru.xezard.items.remover.data.ItemsManager;
+import ru.xezard.items.remover.data.TrackedManager;
 
 @AllArgsConstructor
 public class ProjectileHitListener
 implements Listener
 {
-    private final ItemsManager itemsManager;
+    private final TrackedManager trackedManager;
 
     @EventHandler
     public void onHit(ProjectileHitEvent event)
@@ -40,6 +40,6 @@ implements Listener
             return;
         }
 
-        // this.itemsManager.addEntity(event.getEntity());
+        this.trackedManager.addEntity(event.getEntity());
     }
 }
