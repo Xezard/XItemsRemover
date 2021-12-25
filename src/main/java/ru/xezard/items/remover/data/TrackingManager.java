@@ -62,7 +62,7 @@ public class TrackingManager
 
     private Logger logger;
 
-    public ItemsManager(Configurations configurations, ItemsRemoverPlugin plugin, Logger logger)
+    public TrackingManager(Configurations configurations, ItemsRemoverPlugin plugin, Logger logger)
     {
         this.configurations = configurations;
 
