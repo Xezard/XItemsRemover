@@ -36,9 +36,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
-public class ItemsManager
+public class TrackingManager
 {
-    private List<Map<Item, Long>> items = new ArrayList<Map<Item, Long>> (20)
+    private List<Map<Entity, Long>> entities = new ArrayList<Map<Entity, Long>> (20)
     {{
         for (int i = 0; i < 20; i++)
         {
@@ -123,30 +123,35 @@ public class ItemsManager
             this.tick.set(0);
         }
 
-        Map<Item, Long> items = this.items.get(tick);
+        Map<Entity, Long> entities = this.entities.get(tick);
 
-        for (Map.Entry<Item, Long> entry : items.entrySet())
+        for (Map.Entry<Entity, Long> entry : entities.entrySet())
         {
-            Item item = entry.getKey();
+            Entity entity = entry.getKey();
 
             // fix for slimefun
-            if (item.hasMetadata("no_pickup")) {
-                this.removeItem(item);
+            if (entity.hasMetadata("no_pickup")) {
+                this.removeEntity(item);
                 continue;
             }
 
-            ItemStack itemStack = item.getItemStack();
+            if (entity instanceof Item)
+            {
+                Item item = (Item) entity;
 
-            ItemMeta itemMeta = itemStack.getItemMeta();
+                ItemStack itemStack = item.getItemStack();
 
-            Material material = itemStack.getType();
+                ItemMeta itemMeta = itemStack.getItemMeta();
 
-            DropData data = this.dropData.get(material);
+                Material material = itemStack.getType();
 
-            String materialName = Materials.toString(itemStack.getType()),
-                   displayName = itemMeta.hasDisplayName() ? itemMeta.getDisplayName() :
-                           data == null ? materialName : data.getCustomName() == null ?
-                                   materialName : data.getCustomName();
+                DropData data = this.dropData.get(material);
+
+                String materialName = Materials.toString(itemStack.getType()),
+                       displayName = itemMeta.hasDisplayName() ? itemMeta.getDisplayName() :
+                               data == null ? materialName : data.getCustomName() == null ?
+                                       materialName : data.getCustomName();
+            }
 
             long time = entry.getValue();
 
@@ -154,25 +159,25 @@ public class ItemsManager
             {
                 entry.setValue(time - 1);
 
-                item.setCustomName(Chat.colorize(Optional.ofNullable(this.displayNames.ceilingEntry(time).getValue())
-                        .orElse(this.displayNames.firstEntry().getValue())
-                        .replace("{time}", Long.toString(time))
-                        .replace("{amount}", Integer.toString(itemStack.getAmount()))
-                        .replace("{display_name}", displayName)));
+                entity.setCustomName(Chat.colorize(Optional.ofNullable(this.displayNames.ceilingEntry(time).getValue())
+                      .orElse(this.displayNames.firstEntry().getValue())
+                      .replace("{time}", Long.toString(time))
+                      .replace("{amount}", Integer.toString(itemStack.getAmount()))
+                      .replace("{display_name}", displayName)));
                 continue;
             }
 
-            this.removeItem(item);
+            this.removeEntity(item);
 
-            item.remove();
+            entity.remove();
         }
     }
 
     public void updateTimeForAll()
     {
-        this.items.forEach((map) ->
+        this.entities.forEach((map) ->
         {
-            map.replaceAll((item, itemTime) ->
+            map.replaceAll((entity, entityTime) ->
             {
                 return this.getTimeByMaterial(item.getItemStack().getType(), false);
             });
@@ -189,7 +194,7 @@ public class ItemsManager
         }
     }
 
-    private long getTimeByMaterial(Material material, boolean afterDeath)
+    private long getTimeByType(Entity entity, boolean afterDeath)
     {
         DropData data = this.dropData.get(material);
 
@@ -248,22 +253,22 @@ public class ItemsManager
         this.ids.remove(item.getEntityId());
     }
 
-    public void setItemTimer(Item item)
+    public void setEntityTimer(Entity entity)
     {
-        int tick = this.ids.getOrDefault(item.getEntityId(), -1);
+        int tick = this.ids.getOrDefault(entity.getEntityId(), -1);
 
         if (tick == -1)
         {
             return;
         }
 
-        this.items.get(tick).replace(item, this.getTimeByMaterial(item.getItemStack().getType(), false));
+        this.entities.get(tick).replace(entity, this.getTimeByType(entity, false));
     }
 
     public void mergeItems(Item merged, Item target)
     {
-        this.removeItem(merged);
-        this.setItemTimer(target);
+        this.removeEntity(merged);
+        this.setEntityTimer(target);
     }
 
     public boolean tracked(Material material) 
@@ -281,7 +286,7 @@ public class ItemsManager
 
     public void clear()
     {
-        this.items.forEach(Map::clear);
+        this.entities.forEach(Map::clear);
     }
 
     public void stopRemoverTask()
