@@ -50,7 +50,7 @@ public class TrackingManager
 
     private Map<Integer, Integer> ids = new HashMap<> ();
 
-    private Map<Material, TrackData> trackData = new HashMap<> ();
+    private Map<String, TrackData> trackData = new HashMap<> ();
 
     private Configurations configurations;
 
@@ -78,24 +78,16 @@ public class TrackingManager
 
         if (customMaterialsSection != null)
         {
-            for (String materialName : customMaterialsSection.getKeys(false))
+            for (String typeName : customMaterialsSection.getKeys(false))
             {
                 String sectionKey = "Items.Remove-timer.Custom-materials." + materialName + ".",
                        displayName = config.getString(sectionKey + "Display-name");
-
-                Material material = Material.matchMaterial(materialName);
-
-                if (material == null)
-                {
-                    this.logger.warning("Can't find material with name '" + materialName + "'. Custom drop section has been skipped!");
-                    continue;
-                }
 
                 long timer = config.getLong(sectionKey + "Timer", -1);
 
                 boolean tracked = config.getBoolean(sectionKey + "Tracked");
 
-                this.trackData.put(material, new TrackData(displayName, timer, tracked));
+                this.trackData.put(typeName, new TrackData(displayName, timer, tracked));
             }
         } else {
             this.logger.warning("Custom drop data was not loaded.");
@@ -159,8 +151,7 @@ public class TrackingManager
             {
                 entry.setValue(time - 1);
 
-                entity.setCustomName(Chat.colorize(Optional.ofNullable(this.displayNames.ceilingEntry(time).getValue())
-                      .orElse(this.displayNames.firstEntry().getValue())
+                entity.setCustomName(Chat.colorize(this.displayNames.ceilingEntry(time).getValue()
                       .replace("{time}", Long.toString(time))
                       .replace("{amount}", Integer.toString(itemStack.getAmount()))
                       .replace("{display_name}", displayName)));
@@ -216,7 +207,7 @@ public class TrackingManager
         return time;
     }
 
-    public void addItem(Item item, boolean afterDeath)
+    public void addEntity(Entity entity, boolean afterDeath)
     {
         Material material = item.getItemStack().getType();
 
@@ -240,17 +231,18 @@ public class TrackingManager
         this.ids.put(entityId, currentTick);
     }
 
-    public void removeItem(Item item)
+    public void removeEntity(Entity entity)
     {
-        int tick = this.ids.getOrDefault(item.getEntityId(), -1);
+        int entityId = entity.getId(),
+            tick = this.ids.getOrDefault(entityId, -1);
 
         if (tick == -1)
         {
             return;
         }
 
-        this.items.get(tick).remove(item);
-        this.ids.remove(item.getEntityId());
+        this.entities.get(tick).remove(item);
+        this.ids.remove(entityId);
     }
 
     public void setEntityTimer(Entity entity)
@@ -281,7 +273,7 @@ public class TrackingManager
     public void clearData()
     {
         this.displayNames.clear();
-        this.dropData.clear();
+        this.trackData.clear();
     }
 
     public void clear()
