@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import ru.xezard.items.remover.configurations.Configurations;
-import ru.xezard.items.remover.data.TrackedManager;
+import ru.xezard.items.remover.data.TrackingManager;
 
 @AllArgsConstructor
 public class PlayerDeathListener
@@ -41,7 +41,7 @@ implements Listener
 {
     private Configurations configurations;
 
-    private TrackedManager trackedManager;
+    private TrackingManager trackingManager;
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDeath(PlayerDeathEvent event)
@@ -65,7 +65,7 @@ implements Listener
                 items.stream()
                      .peek((itemStack) ->
                      {
-                         if (!this.trackedManager.tracked(itemStack.getType().getName())) 
+                         if (!this.trackingManager.tracked(itemStack.getType().name())) 
                          {
                              return;
                          }
