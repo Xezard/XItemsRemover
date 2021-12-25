@@ -76,6 +76,7 @@ extends JavaPlugin
         pluginManager.registerEvents(new ItemMergeListener(this.itemsManager), this);
         pluginManager.registerEvents(new ItemSpawnListener(this.itemsManager), this);
         pluginManager.registerEvents(new PlayerDeathListener(this.configurations, this.itemsManager), this);
+        pluginManager.registerEvents(new ProjectileHitListener(this.itemsManager), this);
     }
 
     private void registerCommands()
