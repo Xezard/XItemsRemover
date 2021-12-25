@@ -26,6 +26,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.entity.Entity;
 import ru.xezard.items.remover.ItemsRemoverPlugin;
 import ru.xezard.items.remover.configurations.Configurations;
 import ru.xezard.items.remover.utils.Chat;
