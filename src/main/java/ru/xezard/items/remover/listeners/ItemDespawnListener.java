@@ -22,17 +22,17 @@ import lombok.AllArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemDespawnEvent;
-import ru.xezard.items.remover.data.TrackedManager;
+import ru.xezard.items.remover.data.TrackingManager;
 
 @AllArgsConstructor
 public class ItemDespawnListener
 implements Listener
 {
-    private TrackedManager trackedManager;
+    private TrackingManager trackingManager;
 
     @EventHandler
     public void onItemDespawn(ItemDespawnEvent event)
     {
-        this.trackedManager.removeEntity(event.getEntity());
+        this.trackingManager.removeEntity(event.getEntity());
     }
 }
