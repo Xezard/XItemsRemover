@@ -155,7 +155,7 @@ public class ItemsManager
                 entry.setValue(time - 1);
 
                 item.setCustomName(Chat.colorize(Optional.ofNullable(this.displayNames.ceilingEntry(time).getValue())
-                        .orElse(this.displayNames.firstEntry().getValue()))
+                        .orElse(this.displayNames.firstEntry().getValue())
                         .replace("{time}", Long.toString(time))
                         .replace("{amount}", Integer.toString(itemStack.getAmount()))
                         .replace("{display_name}", displayName)));
