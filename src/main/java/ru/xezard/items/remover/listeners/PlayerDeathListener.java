@@ -72,7 +72,7 @@ implements Listener
 
                          ItemMeta itemMeta = itemStack.getItemMeta();
 
-                         List<String> lore = itemMeta.hasLore() ? itemMeta.getLore() : Lists.newArrayList();
+                         List<String> lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<> ();
 
                          lore.add("[pdd]");
 
