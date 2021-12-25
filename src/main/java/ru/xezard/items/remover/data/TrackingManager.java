@@ -236,14 +236,14 @@ public class TrackingManager
             typeName = item.getItemStack().getType().name();
         }
 
-        int entityId = item.getEntityId();
+        int entityId = entity.getEntityId();
 
         if (this.ids.containsKey(entityId) || 
             !this.tracked(typeName) ||
             this.configurations.get("config.yml")
                                .getStringList("Restricted-worlds")
-                               .contains(item.getWorld().getName()) ||
-            item.hasMetadata("no_pickup")) // fix for slimefun
+                               .contains(entity.getWorld().getName()) ||
+            entity.hasMetadata("no_pickup")) // fix for slimefun
         {
             return;
         }
