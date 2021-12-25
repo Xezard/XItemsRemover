@@ -22,17 +22,17 @@ import lombok.AllArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import ru.xezard.items.remover.data.ItemsManager;
+import ru.xezard.items.remover.data.TrackingManager;
 
 @AllArgsConstructor
 public class EntityPickupItemListener
 implements Listener
 {
-    private ItemsManager itemsManager;
+    private TrackingManager trackingManager;
 
     @EventHandler
     public void onPickup(EntityPickupItemEvent event)
     {
-        this.itemsManager.removeItem(event.getItem());
+        this.trackingManager.removeEntity(event.getItem());
     }
 }
