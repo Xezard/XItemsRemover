@@ -24,25 +24,25 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
-import ru.xezard.items.remover.data.ItemsManager;
+import ru.xezard.items.remover.data.TrackingManager;
 
 @AllArgsConstructor
 public class ChunkLoadListener
 implements Listener
 {
-    private ItemsManager itemsManager;
+    private TrackingManager trackingManager;
 
     @EventHandler
     public void onLoad(ChunkLoadEvent event)
     {
         for (Entity entity : event.getChunk().getEntities())
         {
-            if (!(entity instanceof Item))
+            if (!(entity instanceof Item) && !(entity instanceof Arrow))
             {
                 continue;
             }
 
-            this.itemsManager.addItem((Item) entity, false);
+            this.trackingManager.addEntity(entity, false);
         }
     }
 }
