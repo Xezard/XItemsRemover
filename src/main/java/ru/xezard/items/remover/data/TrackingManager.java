@@ -86,7 +86,7 @@ public class TrackingManager
 
                 long timer = config.getLong(sectionKey + "Timer", -1);
 
-                boolean tracked = config.getBoolean(sectionKey + "Tracked");
+                boolean tracked = config.getBoolean(sectionKey + "Tracked", true);
 
                 this.trackData.put(typeName, new TrackData(displayName, timer, tracked));
             }
@@ -242,8 +242,6 @@ public class TrackingManager
 
         int entityId = entity.getEntityId();
 
-        System.out.println("ADD ENTITY, ID: " + entityId + ", TYPE: " + typeName + ", TRACKED: " + this.tracked(typeName));
-
         if (this.ids.containsKey(entityId) || 
             !this.tracked(typeName) ||
             this.configurations.get("config.yml")
@@ -253,8 +251,6 @@ public class TrackingManager
         {
             return;
         }
-
-        System.out.println("SUCCESSFULLY TRACKED, ID: " + entityId);
 
         entity.setCustomNameVisible(true);
 
