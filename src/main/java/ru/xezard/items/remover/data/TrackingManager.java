@@ -104,8 +104,6 @@ public class TrackingManager
         {
             this.displayNames.put(Long.parseLong(timerString), config.getString("Items.Display-name-formats." + timerString));
         }
-
-        System.out.println("DISPLAY NAMES: " + this.displayNames);
     }
 
     private synchronized void clearEntities()
@@ -133,11 +131,10 @@ public class TrackingManager
             long time = entry.getValue();
 
             String entityDisplayName = "";
-                   // displayName = this.displayNames.ceilingEntry(time).getValue();
- 
-            System.out.println("TIME: " + time + ", VALUE: " + this.displayNames.ceilingEntry(time));
+                   displayName = Optional.ofNullable(this.displayNames.ceilingEntry(time))
+                                         .orElse(this.displayNames.higherEntry()).getValue();
 
-            /*int amount = 1;
+            int amount = 1;
 
             if (entity instanceof Item)
             {
@@ -173,7 +170,7 @@ public class TrackingManager
 
             this.removeEntity(entity);
 
-            entity.remove();*/
+            entity.remove();
         }
     }
 
