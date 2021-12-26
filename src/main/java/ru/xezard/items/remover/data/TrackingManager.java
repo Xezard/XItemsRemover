@@ -130,7 +130,7 @@ public class TrackingManager
 
             long time = entry.getValue();
 
-            String entityDisplayName = "";
+            String entityDisplayName = "",
                    displayName = Optional.ofNullable(this.displayNames.ceilingEntry(time))
                                          .orElse(this.displayNames.lastEntry())
                                          .getValue();
