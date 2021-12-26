@@ -81,17 +81,21 @@ public class TrackingManager
         {
             for (String typeName : customMaterialsSection.getKeys(false))
             {
-                String sectionKey = "Items.Remove-timer.Custom-materials." + typeName + ".",
-                       displayName = config.getString(sectionKey + "Display-name");
+                String sectionKey = "Items.Remove-timer.Custom-materials." + typeName + ".";
+
+                NavigableMap<Long, String> dataDisplayNames = new TreeMap<> ();
+
+                for (String dataTimerString : config.getConfigurationSection(sectionKey + "Display-names").getKeys(false))
+                {
+                    dataDisplayNames.put(Long.parseLong(dataTimerString), config.getString(sectionKey + " Display-names." + timerString));
+                }
 
                 long timer = config.getLong(sectionKey + "Timer", -1);
 
                 boolean tracked = config.getBoolean(sectionKey + "Tracked", true);
 
-                this.trackData.put(typeName, new TrackData(displayName, timer, tracked));
+                this.trackData.put(typeName, new TrackData(dataDisplayNames, timer, tracked));
             }
-
-            System.out.println(this.trackData);
         } else {
             this.logger.warning("Custom drop data was not loaded.");
         }
