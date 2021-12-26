@@ -90,6 +90,8 @@ public class TrackingManager
 
                 this.trackData.put(typeName, new TrackData(displayName, timer, tracked));
             }
+
+            System.out.println(this.trackData);
         } else {
             this.logger.warning("Custom drop data was not loaded.");
         }
@@ -240,6 +242,8 @@ public class TrackingManager
 
         int entityId = entity.getEntityId();
 
+        System.out.println("ADD ENTITY, ID: " + entityId + ", TYPE: " + typeName + ", TRACKED: " + this.tracked(typeName));
+
         if (this.ids.containsKey(entityId) || 
             !this.tracked(typeName) ||
             this.configurations.get("config.yml")
@@ -249,6 +253,8 @@ public class TrackingManager
         {
             return;
         }
+
+        System.out.println("SUCCESSFULLY TRACKED, ID: " + entityId);
 
         entity.setCustomNameVisible(true);
 
