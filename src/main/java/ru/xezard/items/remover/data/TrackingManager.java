@@ -132,7 +132,8 @@ public class TrackingManager
 
             String entityDisplayName = "";
                    displayName = Optional.ofNullable(this.displayNames.ceilingEntry(time))
-                                         .orElse(this.displayNames.higherEntry()).getValue();
+                                         .orElse(this.displayNames.lastEntry())
+                                         .getValue();
 
             int amount = 1;
 
