@@ -294,7 +294,12 @@ public class TrackingManager
     {
         TrackData data = this.trackData.get(typeName);
 
-        return data == null || data.isTracked();
+        if (data == null) 
+        {
+            return true;
+        }
+
+        return data.isTracked();
     }
 
     public void clearData()
