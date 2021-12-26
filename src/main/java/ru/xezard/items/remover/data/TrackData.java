@@ -25,8 +25,6 @@ public class TrackData
 {
     NavigableMap<Long, String> displayNames = new TreeMap<> ();
 
-    String customName;
-
     long timer;
 
     boolean tracked;
