@@ -133,7 +133,7 @@ public class TrackingManager
             long time = entry.getValue();
 
             Optional<String> entityDisplayNameFormat = Optional.ofNullable(data.getDisplayNames().ceilingEntry(time))
-                                                               .flatMap(Map.Entry::getValue);
+                                                               .map(Map.Entry::getValue);
 
             String entityDisplayName = "",
                    displayNameFormat = Optional.ofNullable(this.displayNames.ceilingEntry(time))
