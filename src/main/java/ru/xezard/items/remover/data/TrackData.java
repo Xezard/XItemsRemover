@@ -26,7 +26,7 @@ import java.util.TreeMap;
 @Value
 public class TrackData
 {
-    NavigableMap<Long, String> displayNames = new TreeMap<> ();
+    NavigableMap<Long, String> displayNames;
 
     long timer;
 
