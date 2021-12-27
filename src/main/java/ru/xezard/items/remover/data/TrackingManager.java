@@ -204,14 +204,7 @@ public class TrackingManager
 
     private long getTimeByEntity(Entity entity, boolean afterDeath)
     {
-        String typeName = entity.getType().name();
-
-        if (entity instanceof Item)
-        {
-            Item item = (Item) entity;
-
-            typeName = item.getItemStack().getType().name();
-        }
+        String typeName = this.getType(entity);
 
         TrackData data = this.trackData.get(typeName);
 
@@ -235,14 +228,7 @@ public class TrackingManager
 
     public void addEntity(Entity entity, boolean afterDeath)
     {
-        String typeName = entity.getType().name();
-
-        if (entity instanceof Item)
-        {
-            Item item = (Item) entity;
-
-            typeName = item.getItemStack().getType().name();
-        }
+        String typeName = this.getType(entity);
 
         int entityId = entity.getEntityId();
 
@@ -306,6 +292,20 @@ public class TrackingManager
         }
 
         return data.isTracked();
+    }
+
+    private String getType(Entity entity) 
+    {
+        String typeName = entity.getType().name();
+
+        if (entity instanceof Item)
+        {
+            Item item = (Item) entity;
+
+            typeName = item.getItemStack().getType().name();
+        }
+
+        return typeName;
     }
 
     public void clearData()
