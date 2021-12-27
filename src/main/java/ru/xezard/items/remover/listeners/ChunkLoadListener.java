@@ -38,7 +38,7 @@ implements Listener
     {
         for (Entity entity : event.getChunk().getEntities())
         {
-            if (!(entity instanceof Item) && !(entity instanceof Arrow))
+            if (!(entity instanceof Item))
             {
                 continue;
             }
