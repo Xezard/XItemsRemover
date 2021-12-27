@@ -128,18 +128,17 @@ public class TrackingManager
         {
             Entity entity = entry.getKey();
 
-            // fix for slimefun
-            if (entity.hasMetadata("no_pickup")) {
-                this.removeEntity(entity);
-                continue;
-            }
+            TrackData data = this.getType(entity);
 
             long time = entry.getValue();
 
+            Optional<String> entityDisplayNameFormat = Optional.ofNullable(data.getDisplayNames().ceilingEntry(time))
+                                                               .flatMap(entry::getValue);
+
             String entityDisplayName = "",
-                   displayName = Optional.ofNullable(this.displayNames.ceilingEntry(time))
-                                         .orElse(this.displayNames.lastEntry())
-                                         .getValue();
+                   displayNameFormat = Optional.ofNullable(this.displayNames.ceilingEntry(time))
+                                               .orElse(this.displayNames.lastEntry())
+                                               .getValue();
 
             int amount = 1;
 
@@ -151,18 +150,14 @@ public class TrackingManager
 
                 ItemMeta itemMeta = itemStack.getItemMeta();
 
-                Material material = itemStack.getType();
-
-                TrackData data = this.trackData.get(material.name());
-
-                String materialName = Materials.toString(material);
-
-                entityDisplayName = itemMeta.hasDisplayName() ? itemMeta.getDisplayName() :
-                           data == null ? materialName : data.getCustomName() == null ?
-                                  materialName : data.getCustomName();
+                entityDisplayName = itemMeta.hasDisplayName() ? 
+                                    itemMeta.getDisplayName() : 
+                                    Materials.toString(itemStack.getType());
 
                 amount = itemStack.getAmount();
             }
+
+            String displayName = entityDisplayNameFormat.orElse(displayNameFormat);
 
             if (time > 0)
             {
