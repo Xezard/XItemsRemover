@@ -1,6 +1,6 @@
 Items:
   # Format:
-  # '(timer)': "(format)"
+  # '<timer value>': "<format>"
   # Available placeholders:
   # {time} - time remaining before remove (in seconds)
   # {display_name} - display name of itemstack (if empty - used localized material name}
@@ -8,7 +8,6 @@ Items:
   Display-name-formats: 
     '1': "§c⚠ {time} §7| §f{display_name} §a{amount}x"
     '10': "§c{time}"
-  # If 'true', timer and hologram display works for arrows too
   Remove-timer:
     # Timer for removing an item in seconds
     Default: 30
