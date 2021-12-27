@@ -21,16 +21,17 @@ package ru.xezard.items.remover.listeners;
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Arrow;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
-import ru.xezard.items.remover.data.ItemsManager;
+import ru.xezard.items.remover.data.TrackingManager;
 
 @AllArgsConstructor
 public class ChunkLoadListener
 implements Listener
 {
-    private ItemsManager itemsManager;
+    private TrackingManager trackingManager;
 
     @EventHandler
     public void onLoad(ChunkLoadEvent event)
@@ -42,7 +43,7 @@ implements Listener
                 continue;
             }
 
-            this.itemsManager.addItem((Item) entity, false);
+            this.trackingManager.addEntity(entity, false);
         }
     }
 }

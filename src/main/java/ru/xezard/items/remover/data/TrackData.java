@@ -20,10 +20,15 @@ package ru.xezard.items.remover.data;
 
 import lombok.Value;
 
+import java.util.NavigableMap;
+import java.util.TreeMap;
+
 @Value
-public class DropData
+public class TrackData
 {
-    String customName;
+    NavigableMap<Long, String> displayNames;
 
     long timer;
+
+    boolean tracked;
 }

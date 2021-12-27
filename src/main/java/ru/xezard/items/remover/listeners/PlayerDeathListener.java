@@ -18,6 +18,8 @@
  */
 package ru.xezard.items.remover.listeners;
 
+import lombok.AllArgsConstructor;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -30,13 +32,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import ru.xezard.items.remover.configurations.Configurations;
+import ru.xezard.items.remover.data.TrackingManager;
+
+@AllArgsConstructor
 public class PlayerDeathListener
 implements Listener
 {
+    private Configurations configurations;
+
+    private TrackingManager trackingManager;
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDeath(PlayerDeathEvent event)
     {
-        if (event.getKeepInventory() || event.getDrops().isEmpty())
+        if (event.getKeepInventory() || 
+            event.getDrops().isEmpty() ||
+            this.configurations.get("config.yml")
+                               .getStringList("Restricted-worlds")
+                               .contains(event.getEntity().getWorld().getName())
+           )
         {
             return;
         }
@@ -50,19 +65,19 @@ implements Listener
                 items.stream()
                      .peek((itemStack) ->
                      {
-                         ItemMeta itemMeta = itemStack.getItemMeta();
-
-                         if (itemMeta.hasLore())
+                         if (!this.trackingManager.tracked(itemStack.getType().name())) 
                          {
-                             List<String> lore = itemMeta.getLore();
-
-                             lore.add("[pdd]");
-
-                             itemMeta.setLore(lore);
-                         } else {
-                             itemMeta.setLore(Collections.singletonList("[pdd]"));
+                             return;
                          }
 
+                         ItemMeta itemMeta = itemStack.getItemMeta();
+
+                         List<String> lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<> ();
+
+                         lore.add("[pdd]");
+
+                         itemMeta.setLore(lore);
+                       
                          itemStack.setItemMeta(itemMeta);
                      }).collect(Collectors.toList())
         );

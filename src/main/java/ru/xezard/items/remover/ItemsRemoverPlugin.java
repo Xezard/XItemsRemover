@@ -25,7 +25,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.xezard.items.remover.commands.ItemsRemoverCommand;
 import ru.xezard.items.remover.configurations.Configurations;
-import ru.xezard.items.remover.data.ItemsManager;
+import ru.xezard.items.remover.data.TrackingManager;
 import ru.xezard.items.remover.listeners.*;
 
 import java.io.IOException;
@@ -39,7 +39,7 @@ extends JavaPlugin
 {
     private Configurations configurations = new Configurations(this, "config.yml", "messages.yml");
 
-    private ItemsManager itemsManager;
+    private TrackingManager trackingManager;
 
     @Override
     public void onEnable()
@@ -48,13 +48,12 @@ extends JavaPlugin
 
         this.configurations.loadConfigurations();
 
-        this.itemsManager = new ItemsManager(this.configurations, this, this.getLogger());
-        this.itemsManager.loadDropData(this.configurations.get("config.yml"));
+        this.trackingManager = new TrackingManager(this.configurations, this, this.getLogger());
+        this.trackingManager.load(this.configurations.get("config.yml"));
+        this.trackingManager.startRemoverTask();
 
         this.registerListeners();
         this.registerCommands();
-
-        this.itemsManager.startRemoverTask();
 
         this.checkUpdates(this.getLogger());
     }
@@ -63,19 +62,19 @@ extends JavaPlugin
     public void onDisable()
     {
         this.configurations = null;
-        this.itemsManager = null;
+        this.trackingManager = null;
     }
 
     private void registerListeners()
     {
         PluginManager pluginManager = Bukkit.getPluginManager();
 
-        pluginManager.registerEvents(new ChunkLoadListener(this.itemsManager), this);
-        pluginManager.registerEvents(new EntityPickupItemListener(this.itemsManager), this);
-        pluginManager.registerEvents(new ItemDespawnListener(this.itemsManager), this);
-        pluginManager.registerEvents(new ItemMergeListener(this.itemsManager), this);
-        pluginManager.registerEvents(new ItemSpawnListener(this.itemsManager), this);
-        pluginManager.registerEvents(new PlayerDeathListener(), this);
+        pluginManager.registerEvents(new ChunkLoadListener(this.trackingManager), this);
+        pluginManager.registerEvents(new EntityPickupItemListener(this.trackingManager), this);
+        pluginManager.registerEvents(new ItemDespawnListener(this.trackingManager), this);
+        pluginManager.registerEvents(new ItemMergeListener(this.trackingManager), this);
+        pluginManager.registerEvents(new ItemSpawnListener(this.trackingManager), this);
+        pluginManager.registerEvents(new PlayerDeathListener(this.configurations, this.trackingManager), this);
     }
 
     private void registerCommands()
@@ -121,11 +120,11 @@ extends JavaPlugin
 
     public void reload()
     {
-        this.itemsManager.clearDropData();
+        this.trackingManager.clearData();
 
         this.configurations.reloadConfigurations();
 
-        this.itemsManager.loadDropData(this.configurations.get("config.yml"));
-        this.itemsManager.updateTimeForAll();
+        this.trackingManager.load(this.configurations.get("config.yml"));
+        this.trackingManager.updateTimeForAll();
     }
 }

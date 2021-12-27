@@ -1,9 +1,14 @@
 Items:
-  # available placeholders
+  # Format:
+  # '(timer)': "(format)"
+  # Available placeholders:
   # {time} - time remaining before remove (in seconds)
   # {display_name} - display name of itemstack (if empty - used localized material name}
   # {amount} - itemstack amount
-  Display-name-format: "§c⚠ {time} §7| §f{display_name} §a{amount}x"
+  Display-name-formats: 
+    '1': "§c⚠ {time} §7| §f{display_name} §a{amount}x"
+    '10': "§c{time}"
+  # If 'true', timer and hologram display works for arrows too
   Remove-timer:
     # Timer for removing an item in seconds
     Default: 30
@@ -14,14 +19,25 @@ Items:
     # Format:
     # <material name>:
     #   <timer>: 15
-    #   <display name>: "Test"
+    #   <display name formats>:
+    #     <timer value>: <display name format>
+    #   <tracked>: false
     # If you only need to edit one parameter
     # (name or time) you can just delete the line with the second.
+    # If you need the plugin not to track a certain type of materials, then set 'tracked: false'
     Custom-materials:
       COBBLESTONE:
         Timer: 15
-        Display-name: "Cobblestone :D"
+        Display-name-formats: 
+          '15': "Cobblestone :D"
       STONE:
         Timer: 10
       GRASS:
-        Display-name: "Grazz"
+        Display-name-formats: 
+          '30': "Grazz"
+      SAND:
+        Tracked: false
+       
+# Worlds in which plugin does not work
+Restricted-worlds:
+- "restricted_world"
