@@ -87,7 +87,7 @@ public class TrackingManager
 
                 for (String dataTimerString : config.getConfigurationSection(sectionKey + "Display-names").getKeys(false))
                 {
-                    dataDisplayNames.put(Long.parseLong(dataTimerString), config.getString(sectionKey + " Display-names." + timerString));
+                    dataDisplayNames.put(Long.parseLong(dataTimerString), config.getString(sectionKey + " Display-names." + dataTimerString));
                 }
 
                 long timer = config.getLong(sectionKey + "Timer", -1);
@@ -128,7 +128,7 @@ public class TrackingManager
         {
             Entity entity = entry.getKey();
 
-            TrackData data = this.getType(entity);
+            TrackData data = this.trackData.get(this.getType(entity));
 
             long time = entry.getValue();
 
