@@ -85,9 +85,16 @@ public class TrackingManager
 
                 NavigableMap<Long, String> dataDisplayNames = new TreeMap<> ();
 
-                for (String dataTimerString : config.getConfigurationSection(sectionKey + "Display-name-formats").getKeys(false))
+                ConfigurationSection typeDisplayNamesSection = config.getConfigurationSection(sectionKey + "Display-name-formats");
+
+                if (typeDisplayNamesSection == null) 
                 {
-                    dataDisplayNames.put(Long.parseLong(dataTimerString), config.getString(sectionKey + " Display-name-formats." + dataTimerString));
+                    continue;
+                }
+
+                for (String dataTimerString : typeDisplayNamesSection.getKeys(false))
+                {
+                    dataDisplayNames.put(Long.parseLong(dataTimerString), config.getString(sectionKey + "Display-name-formats." + dataTimerString));
                 }
 
                 long timer = config.getLong(sectionKey + "Timer", -1);
