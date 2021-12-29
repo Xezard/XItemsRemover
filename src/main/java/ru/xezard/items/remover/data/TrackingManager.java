@@ -286,7 +286,7 @@ public class TrackingManager
 
     public boolean tracked(String typeName) 
     {
-        return this.getTrackData()
+        return this.getTrackData(typeName)
                    .map(TrackData::isTracked)
                    .orElse(true);
     }
