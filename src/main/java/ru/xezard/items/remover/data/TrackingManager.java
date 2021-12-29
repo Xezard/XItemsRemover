@@ -210,15 +210,17 @@ public class TrackingManager
         long time = afterDeath ? config.getLong("Items.Remove-timer.After-player-death") :
                                  config.getLong("Items.Remove-timer.Default");
 
-        this.getTrackData(this.getType(entity)).ifPresent((data) ->
+        Optional<TrackData> trackData = this.getTrackData(this.getType(entity));
+
+        if (trackData.isPresent())
         {
-            long timer = data.getTimer();
+            long timer = trackData.get().getTimer();
 
             if (timer > 0)
             {
                 time = timer;
             }
-        });
+        }
 
         return time;
     }
