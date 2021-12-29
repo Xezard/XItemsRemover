@@ -279,7 +279,7 @@ public class TrackingManager
         this.setEntityTimer(target);
     }
 
-    public Optional<TrackData> getTrackData() 
+    public Optional<TrackData> getTrackData(String typeName) 
     {
         return Optional.ofNullable(this.trackData.get(typeName));
     }
