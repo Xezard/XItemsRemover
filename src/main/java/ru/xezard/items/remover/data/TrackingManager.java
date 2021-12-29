@@ -135,12 +135,11 @@ public class TrackingManager
         {
             Entity entity = entry.getKey();
 
-            TrackData data = this.trackData.get(this.getType(entity));
-
             long time = entry.getValue();
 
-            Optional<String> entityDisplayNameFormat = Optional.ofNullable(data.getDisplayNames().ceilingEntry(time))
-                                                               .map(Map.Entry::getValue);
+            Optional<String> entityDisplayNameFormat = this.getTrackData(this.getType(entity))
+                                                           .map((data) -> data.getDisplayNames().ceilingEntry(time))
+                                                           .map(Map.Entry::getValue);
 
             String entityDisplayName = "",
                    displayNameFormat = Optional.ofNullable(this.displayNames.ceilingEntry(time))
@@ -206,16 +205,12 @@ public class TrackingManager
 
     private long getTimeByEntity(Entity entity, boolean afterDeath)
     {
-        String typeName = this.getType(entity);
-
-        TrackData data = this.trackData.get(typeName);
-
         FileConfiguration config = this.configurations.get("config.yml");
 
         long time = afterDeath ? config.getLong("Items.Remove-timer.After-player-death") :
                                  config.getLong("Items.Remove-timer.Default");
 
-        if (data != null)
+        this.getTrackData(this.getType(entity)).ifPresent((data) ->
         {
             long timer = data.getTimer();
 
@@ -223,7 +218,7 @@ public class TrackingManager
             {
                 time = timer;
             }
-        }
+        });
 
         return time;
     }
@@ -284,16 +279,16 @@ public class TrackingManager
         this.setEntityTimer(target);
     }
 
+    public Optional<TrackData> getTrackData() 
+    {
+        return Optional.ofNullable(this.trackData.get(typeName));
+    }
+
     public boolean tracked(String typeName) 
     {
-        TrackData data = this.trackData.get(typeName);
-
-        if (data == null) 
-        {
-            return true;
-        }
-
-        return data.isTracked();
+        return this.getTrackData()
+                   .map(TrackData::isTracked)
+                   .orElse(true);
     }
 
     private String getType(Entity entity) 
