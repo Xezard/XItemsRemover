@@ -9,6 +9,7 @@
 [![Github Releases Downloads](https://img.shields.io/github/downloads/Xezard/XItemsRemover/total?label=downloads%20%5Bgithub%20releases%5D)](https://github.com/Xezard/XItemsRemover/releases)
 [![Spiget Rating](https://img.shields.io/spiget/rating/85123)](https://www.spigotmc.org/resources/xitemsremover.85123/) 
 [![Discord chat](https://img.shields.io/discord/775493797702139914?color=blue&label=discord)](https://discord.gg/JZ9uZ5aXwf)
+[![Wakatime](https://wakatime.com/badge/user/d6a049ff-6a4a-43a6-84ca-2a7d63329349/project/bd3581d7-d99b-423e-b337-4a159232f801.svg)](https://wakatime.com/badge/user/d6a049ff-6a4a-43a6-84ca-2a7d63329349/project/bd3581d7-d99b-423e-b337-4a159232f801)
 
 XItemsRemover is a simple plugin for Spigot that removes dropped items with a timer displayed on them.
 
